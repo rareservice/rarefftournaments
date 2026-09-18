@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded", () => {
   AuthManager.init();
   renderLeaderboard();
   setupNavigation();
-  setupCurrencySelector();
   setupProfileModal();
   setupAdminBridge();
 
@@ -33,22 +32,6 @@ function setupNavigation() {
   if (mobileToggle && navLinks) {
     mobileToggle.addEventListener("click", () => {
       navLinks.classList.toggle("mobile-open");
-    });
-  }
-}
-
-function setupCurrencySelector() {
-  const select = document.getElementById("currency-select");
-  if (select) {
-    select.addEventListener("change", (e) => {
-      Store.setCurrency(e.target.value);
-      UI.toast(`Currency: ${e.target.value}`, "info");
-      UI.updateHeader();
-      TournamentsManager.renderTournaments();
-      TournamentsManager.renderMyMatches();
-      WalletManager.renderWalletSummary();
-      WalletManager.renderTransactions();
-      renderLeaderboard();
     });
   }
 }
@@ -151,21 +134,6 @@ async function handleProfileUpdate(e) {
   const phone = document.getElementById("profile-phone-input").value.trim();
 
   Store.updateUserProfile({ ign, ffUid, phone });
-
-  // If Firebase is active and user logged in, sync to Firestore
-  if (isFirebaseConfigured() && firebase.auth().currentUser) {
-    try {
-      const uid = firebase.auth().currentUser.uid;
-      await firebase.firestore().collection("users").doc(uid).update({
-        ign,
-        ffUid,
-        phone
-      });
-      await firebase.auth().currentUser.updateProfile({ displayName: ign });
-    } catch (err) {
-      console.error("Firestore profile update error:", err);
-    }
-  }
 
   UI.toast("Player profile saved!", "success");
   UI.updateHeader();

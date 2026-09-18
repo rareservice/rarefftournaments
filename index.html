@@ -64,15 +64,6 @@
 
       <!-- User Actions & Auth State -->
       <div class="nav-actions">
-        <!-- Currency Selector (INR Removed, Fixed Dark Menu) -->
-        <div class="currency-select-wrap">
-          <select id="currency-select" class="currency-select" title="Change Display Currency">
-            <option value="PKR">Rs. PKR</option>
-            <option value="USD">$ USD</option>
-            <option value="COIN">💎 Coins</option>
-          </select>
-        </div>
-
         <!-- 1. GUEST ACTIONS (Visible when Logged Out) -->
         <div id="nav-guest-actions" style="display: flex; align-items: center; gap: 8px;">
           <button class="btn-secondary" style="padding: 7px 14px; font-size: 13px;" onclick="AuthManager.openAuthModal('signin')">
@@ -88,11 +79,11 @@
           <!-- Wallet Quick Button -->
           <div class="wallet-btn-compact" onclick="UI.openModal('wallet-modal'); WalletManager.selectTab('deposit');" title="Open Wallet">
             <span>💳</span>
-            <span class="wallet-amount" id="nav-wallet-balance">Rs. 0</span>
+            <span class="wallet-amount" id="nav-wallet-balance">💎 0</span>
           </div>
 
           <!-- Quick Deposit -->
-          <button class="btn-deposit-glow" onclick="UI.showSoon();">
+          <button class="btn-deposit-glow" onclick="UI.openModal('wallet-modal'); WalletManager.selectTab('deposit');">
             <span>+</span> Deposit
           </button>
 
@@ -147,7 +138,7 @@
             <button class="btn-primary" onclick="UI.switchView('matches')">
               ⚔️ Explore Arena
             </button>
-            <button class="btn-secondary" onclick="UI.showSoon()">
+            <button class="btn-secondary" onclick="UI.openModal('wallet-modal'); WalletManager.selectTab('deposit');">
               💰 Deposit & Play
             </button>
             <button class="btn-secondary" onclick="UI.switchView('rules')">
@@ -184,7 +175,7 @@
               <div class="hero-stat-lbl">No Emulators Allowed</div>
             </div>
             <div class="hero-stat-box" style="text-align: center;">
-              <div class="hero-stat-val text-orange">Cash Per Kill</div>
+              <div class="hero-stat-val text-orange">Coins Per Kill</div>
               <div class="hero-stat-lbl">Guaranteed Payouts</div>
             </div>
           </div>
@@ -278,7 +269,7 @@
           <div class="mode-card-content">
             <span class="mode-tag" style="background: rgba(255, 85, 0, 0.2); color: var(--accent-orange); border-color: rgba(255, 85, 0, 0.4);">BOUNTY HUNTER</span>
             <h3 class="mode-title">BR PER KILL</h3>
-            <p class="mode-subtitle">Earn Cash Per Elimination • Rush Mode</p>
+            <p class="mode-subtitle">Earn Coins Per Elimination • Rush Mode</p>
             <button class="btn-primary mode-btn">
               <span>🎯</span> Join Matches
             </button>
@@ -442,7 +433,7 @@
             <div class="rule-icon safe">💵</div>
             <div>
               <h3 style="color: #fff; font-size: 17px;">Prize Payouts & Verification</h3>
-              <span style="font-size: 12px; color: var(--accent-gold); font-weight: 700;">GUARANTEED CASH CREDITS</span>
+              <span style="font-size: 12px; color: var(--accent-gold); font-weight: 700;">GUARANTEED COIN CREDITS</span>
             </div>
           </div>
           <ul class="rule-list">
@@ -518,7 +509,7 @@
             <details style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
               <summary style="font-weight: 700; color: #fff; cursor: pointer; font-size: 14px;">How are per-kill rewards calculated?</summary>
               <p style="font-size: 13px; color: var(--text-secondary); margin-top: 8px; line-height: 1.5;">
-                Each tournament specifies a per-kill reward. Even if your team does not win Booyah, every verified elimination made by your registered UID earns cash credited straight to your winnings balance.
+                Each tournament specifies a per-kill reward. Even if your team does not win Booyah, every verified elimination made by your registered UID earns coins credited straight to your winnings balance.
               </p>
             </details>
 
@@ -745,27 +736,7 @@
     </div>
   </div>
 
-  <!-- OTHER MODALS -->
-  <div class="modal-overlay" id="details-modal">
-    <div class="modal-card">
-      <div class="modal-header">
-        <h3 style="font-size: 18px; color: #fff;">Match Rules & Prize Breakdown</h3>
-        <button class="modal-close" onclick="UI.closeModal('details-modal')">✕</button>
-      </div>
-      <div class="modal-body" id="details-modal-content"></div>
-    </div>
-  </div>
-
-  <div class="modal-overlay" id="join-modal">
-    <div class="modal-card">
-      <div class="modal-header">
-        <h3 style="font-size: 18px; color: #fff;">Tournament Slot Registration</h3>
-        <button class="modal-close" onclick="UI.closeModal('join-modal')">✕</button>
-      </div>
-      <div class="modal-body" id="join-modal-content"></div>
-    </div>
-  </div>
-
+  <!-- WALLET & DEPOSIT MODAL -->
   <div class="modal-overlay" id="wallet-modal">
     <div class="modal-card" style="max-width: 580px;">
       <div class="modal-header">
@@ -779,15 +750,15 @@
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; background: rgba(0,0,0,0.4); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px; text-align: center;">
           <div>
             <span style="font-size: 11px; color: var(--text-muted); display: block; text-transform: uppercase;">Total Balance</span>
-            <span style="font-size: 18px; font-weight: 800; color: var(--accent-gold); font-family: var(--font-heading);" id="wallet-total-bal">Rs. 0</span>
+            <span style="font-size: 18px; font-weight: 800; color: var(--accent-gold); font-family: var(--font-heading);" id="wallet-total-bal">💎 0</span>
           </div>
           <div>
             <span style="font-size: 11px; color: var(--text-muted); display: block; text-transform: uppercase;">Deposit Balance</span>
-            <span style="font-size: 18px; font-weight: 800; color: #cbd5e1; font-family: var(--font-heading);" id="wallet-deposit-bal">Rs. 0</span>
+            <span style="font-size: 18px; font-weight: 800; color: #cbd5e1; font-family: var(--font-heading);" id="wallet-deposit-bal">💎 0</span>
           </div>
           <div>
             <span style="font-size: 11px; color: var(--text-muted); display: block; text-transform: uppercase;">Winnings Balance</span>
-            <span style="font-size: 18px; font-weight: 800; color: var(--accent-green); font-family: var(--font-heading);" id="wallet-winnings-bal">Rs. 0</span>
+            <span style="font-size: 18px; font-weight: 800; color: var(--accent-green); font-family: var(--font-heading);" id="wallet-winnings-bal">💎 0</span>
           </div>
         </div>
 
@@ -798,56 +769,109 @@
         </div>
 
         <div id="wallet-view-deposit">
-          <form onsubmit="WalletManager.handleDepositSubmit(event)">
-            <div class="form-group">
-              <label class="form-label">Select Payment Method</label>
-              <div class="pay-methods-grid">
-                <div class="pay-method-btn selected" data-gateway="jazzcash" onclick="WalletManager.selectGateway('jazzcash')">
-                  <span>📱</span> JazzCash
+          <div style="margin-bottom: 16px; background: rgba(245, 158, 11, 0.1); border-left: 3px solid var(--accent-gold); padding: 12px; border-radius: 4px; font-size: 13px; color: #cbd5e1; line-height: 1.5;">
+            💡 <b>Manual Deposit System:</b> Please send your desired deposit amount to any of the verified accounts below. Once transferred, you can upload screenshots of your payment proof or send them via WhatsApp for instant wallet funding!
+          </div>
+
+          <!-- EasyPaisa Options -->
+          <div class="pay-detail-card">
+             <div class="pay-detail-header">
+                <img src="https://cdn.discordapp.com/attachments/1539728895660785797/1550452715748855848/images.png?ex=6aae631d&is=6aad119d&hm=eef5b8ba3d096c3504729eaa36ea74a687bb9439919be963cda55cf563672d74" alt="EasyPaisa" height="24" style="border-radius: 4px;">
+                <span>EasyPaisa Transfer</span>
+             </div>
+             <div class="pay-detail-body">
+                <div class="copy-group">
+                   <div class="copy-info">
+                      <span class="copy-label">IBAN</span>
+                      <span class="copy-val mobile-break">PK59TMFB0000000041622751</span>
+                   </div>
+                   <button class="btn-copy" onclick="UI.copyText('PK59TMFB0000000041622751', 'EasyPaisa IBAN', this)">📋 Copy</button>
                 </div>
-                <div class="pay-method-btn" data-gateway="easypaisa" onclick="WalletManager.selectGateway('easypaisa')">
-                  <span>🟢</span> EasyPaisa
+                <div class="copy-group">
+                   <div class="copy-info">
+                      <span class="copy-label">Account Name</span>
+                      <span class="copy-val">Farhana Imam</span>
+                   </div>
                 </div>
-                <div class="pay-method-btn" data-gateway="nayapay" onclick="WalletManager.selectGateway('nayapay')">
-                  <span>🚀</span> NayaPay
+             </div>
+          </div>
+
+          <!-- Cryptocurrency Options -->
+          <div class="pay-detail-card">
+             <div class="pay-detail-header">
+                <span style="font-size: 18px;">⚡</span>
+                <span>Cryptocurrency Options</span>
+             </div>
+             <div class="pay-detail-body">
+                <!-- LTC -->
+                <div class="copy-group">
+                   <div class="copy-info">
+                      <span class="copy-label"><img src="https://cryptologos.cc/logos/litecoin-ltc-logo.svg" height="14" style="vertical-align: middle;"> LiteCoin [ LTC ]</span>
+                      <span class="copy-val mobile-break">LYHXHj21nGBwKsR17Te8pHZDPy6B2KHnL9</span>
+                   </div>
+                   <button class="btn-copy" onclick="UI.copyText('LYHXHj21nGBwKsR17Te8pHZDPy6B2KHnL9', 'LTC Address', this)">📋 Copy</button>
                 </div>
-                <div class="pay-method-btn" data-gateway="usdt" onclick="WalletManager.selectGateway('usdt')">
-                  <span>🪙</span> Binance USDT
+                <!-- SOL -->
+                <div class="copy-group">
+                   <div class="copy-info">
+                      <span class="copy-label"><img src="https://cryptologos.cc/logos/solana-sol-logo.svg" height="14" style="vertical-align: middle;"> Solana [ SOL ]</span>
+                      <span class="copy-val mobile-break">8sLntdHcssXzmAC9R8MHGTiDyqUM6GSRGHVNW7eTDcBR</span>
+                   </div>
+                   <button class="btn-copy" onclick="UI.copyText('8sLntdHcssXzmAC9R8MHGTiDyqUM6GSRGHVNW7eTDcBR', 'SOL Address', this)">📋 Copy</button>
                 </div>
-                <div class="pay-method-btn" data-gateway="anycrypto" onclick="WalletManager.selectGateway('anycrypto')">
-                  <span>⚡</span> Any Crypto
+                <!-- BTC -->
+                <div class="copy-group">
+                   <div class="copy-info">
+                      <span class="copy-label"><img src="https://cryptologos.cc/logos/bitcoin-btc-logo.svg" height="14" style="vertical-align: middle;"> BitCoin [ BTC ]</span>
+                      <span class="copy-val mobile-break">125cBKfpHJ5BZ87r9E2jyTFrSnXapZnxdN</span>
+                   </div>
+                   <button class="btn-copy" onclick="UI.copyText('125cBKfpHJ5BZ87r9E2jyTFrSnXapZnxdN', 'BTC Address', this)">📋 Copy</button>
                 </div>
-              </div>
+                <!-- USDT -->
+                <div class="copy-group">
+                   <div class="copy-info">
+                      <span class="copy-label"><img src="https://cryptologos.cc/logos/tether-usdt-logo.svg" height="14" style="vertical-align: middle;"> USDT BSC BEP20</span>
+                      <span class="copy-val mobile-break">0x04efe2a1b6eadcab9410ace6a0aed21533bae5df</span>
+                   </div>
+                   <button class="btn-copy" onclick="UI.copyText('0x04efe2a1b6eadcab9410ace6a0aed21533bae5df', 'USDT Address', this)">📋 Copy</button>
+                </div>
+             </div>
+          </div>
+
+          <!-- Attach Payment Proofs Section -->
+          <div class="pay-detail-card" style="border-color: var(--accent-gold);">
+            <div class="pay-detail-header" style="background: rgba(245, 158, 11, 0.1);">
+              <span style="font-size: 18px;">📸</span>
+              <span style="color: var(--accent-gold);">Upload Payment Proofs</span>
             </div>
-
-            <div id="gateway-instructions-box"></div>
-
-            <div class="form-group" style="margin-top: 14px;">
-              <label class="form-label">Deposit Amount (PKR)</label>
-              <input type="number" class="form-input" id="deposit-amount-input" value="200" min="50" required />
-              <div class="amount-chips" style="margin-top: 8px;">
-                <span class="amount-chip" onclick="WalletManager.setQuickAmount(100)">+100</span>
-                <span class="amount-chip active" onclick="WalletManager.setQuickAmount(200)">+200</span>
-                <span class="amount-chip" onclick="WalletManager.setQuickAmount(500)">+500</span>
-                <span class="amount-chip" onclick="WalletManager.setQuickAmount(1000)">+1000</span>
-                <span class="amount-chip" onclick="WalletManager.setQuickAmount(2500)">+2500</span>
-              </div>
+            <div class="pay-detail-body">
+              <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">
+                Take screenshots of your successful transaction and upload them here. You can attach multiple images.
+              </p>
+              <form id="proof-form" onsubmit="WalletManager.handleProofSubmit(event)">
+                <div class="form-group">
+                  <input type="file" id="proof-files" class="form-input file-input-modern" multiple accept="image/png, image/jpeg, image/jpg" required />
+                </div>
+                <button type="submit" class="btn-deposit-glow" style="width: 100%; margin-top: 12px; justify-content: center; font-size: 14px;">
+                  📤 Submit Proofs
+                </button>
+              </form>
             </div>
+          </div>
 
-            <div class="form-group" style="margin-top: 12px;">
-              <label class="form-label">Sender Transaction ID (TID / Reference) *</label>
-              <input type="text" class="form-input" id="deposit-trx-input" placeholder="Enter Transaction ID or TXID" required />
-            </div>
-
-            <button type="submit" class="btn-primary" style="width: 100%; margin-top: 18px; justify-content: center;">
-              Submit Deposit Confirmation
-            </button>
-          </form>
+          <!-- Whatsapp Contact Fallback -->
+          <a href="https://wa.me/923430821414?text=Hello%2C%20I%20have%20sent%20the%20payment%20and%20want%20to%20deposit%20funds%20to%20my%20wallet!" target="_blank" class="whatsapp-contact-card">
+             <span style="font-size: 28px;">💬</span>
+             <div>
+                <b>Having trouble uploading?</b>
+                <span>Click here to send Payment Proof directly on Whatsapp! (+92 343 0821414)</span>
+             </div>
+          </a>
         </div>
 
         <div id="wallet-view-withdraw" style="display: none;">
           <div style="background: rgba(16, 185, 129, 0.08); border-left: 3px solid var(--accent-green); padding: 12px; border-radius: 4px; font-size: 13px; color: #cbd5e1; margin-bottom: 14px;">
-            💡 <b>Instant Cashout:</b> Only funds earned from tournament placements and kills are withdrawable. Minimum withdrawal is <b>Rs. 100</b>.
+            💡 <b>Instant Cashout:</b> Only funds earned from tournament placements and kills are withdrawable. Minimum withdrawal is <b>50 Coins</b>.
           </div>
 
           <form onsubmit="WalletManager.handleWithdrawSubmit(event)">
@@ -864,8 +888,8 @@
             </div>
 
             <div class="form-group" style="margin-top: 12px;">
-              <label class="form-label">Withdrawal Amount (PKR)</label>
-              <input type="number" class="form-input" id="withdraw-amount-input" placeholder="Min 100" min="100" required />
+              <label class="form-label">Withdrawal Amount (Coins)</label>
+              <input type="number" class="form-input" id="withdraw-amount-input" placeholder="Min 50 Coins" min="50" required />
             </div>
 
             <div class="form-group" style="margin-top: 12px;">
@@ -899,6 +923,26 @@
           </table>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="details-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 style="font-size: 18px; color: #fff;">Match Rules & Prize Breakdown</h3>
+        <button class="modal-close" onclick="UI.closeModal('details-modal')">✕</button>
+      </div>
+      <div class="modal-body" id="details-modal-content"></div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="join-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 style="font-size: 18px; color: #fff;">Tournament Slot Registration</h3>
+        <button class="modal-close" onclick="UI.closeModal('join-modal')">✕</button>
+      </div>
+      <div class="modal-body" id="join-modal-content"></div>
     </div>
   </div>
 

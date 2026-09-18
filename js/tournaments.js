@@ -281,7 +281,7 @@ const TournamentsManager = {
       ${!hasEnoughBalance && t.entryFee > 0 ? `
         <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); padding: 12px; border-radius: var(--radius-sm); font-size: 13px; color: #fca5a5;">
           ⚠️ Insufficient funds to join this match.
-          <button class="btn-deposit-glow" style="margin-top: 8px; width: 100%; justify-content: center;" onclick="UI.showSoon()">
+          <button class="btn-deposit-glow" style="margin-top: 8px; width: 100%; justify-content: center;" onclick="UI.closeModal('join-modal'); UI.openModal('wallet-modal'); WalletManager.selectTab('deposit');">
             💳 Quick Deposit to Wallet
           </button>
         </div>
@@ -408,12 +408,12 @@ const TournamentsManager = {
                   <div class="credential-item">
                     <span style="font-size: 13px; color: var(--text-secondary);">Room ID:</span>
                     <span class="cred-val">${t.roomDetails?.roomId || 'Pending'}</span>
-                    <button class="btn-copy-cred" onclick="TournamentsManager.copyText('${t.roomDetails?.roomId || ''}', 'Room ID')">Copy</button>
+                    <button class="btn-copy-cred" onclick="UI.copyText('${t.roomDetails?.roomId || ''}', 'Room ID')">Copy</button>
                   </div>
                   <div class="credential-item">
                     <span style="font-size: 13px; color: var(--text-secondary);">Password:</span>
                     <span class="cred-val">${t.roomDetails?.roomPass || 'Pending'}</span>
-                    <button class="btn-copy-cred" onclick="TournamentsManager.copyText('${t.roomDetails?.roomPass || ''}', 'Password')">Copy</button>
+                    <button class="btn-copy-cred" onclick="UI.copyText('${t.roomDetails?.roomPass || ''}', 'Password')">Copy</button>
                   </div>
                 </div>
               ` : `
@@ -435,18 +435,6 @@ const TournamentsManager = {
     }).join("");
   },
 
-  copyText(text, label) {
-    if (!text) {
-      UI.toast("Credentials pending", "info");
-      return;
-    }
-    navigator.clipboard.writeText(text).then(() => {
-      UI.toast(`${label} copied to clipboard!`, "success");
-    }).catch(() => {
-      UI.toast(`${label} copied to clipboard!`, "success");
-    });
-  },
-
   cancelEntry(matchId) {
     if (confirm("Are you sure you want to cancel your registration?")) {
       const res = Store.cancelRegistration(matchId);
@@ -457,11 +445,6 @@ const TournamentsManager = {
         this.renderMyMatches();
       } else {
         UI.toast(res.message, "error");
-      }
-    }
-  }
-};
-```(res.message, "error");
       }
     }
   }

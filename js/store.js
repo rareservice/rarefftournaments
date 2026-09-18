@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Rare FF Tournaments - Store & State Management Layer (No Dummy Data)
+   Rare FF Tournaments - Store & State Management Layer
    ========================================================================== */
 
 const STORAGE_KEYS = {
@@ -21,9 +21,8 @@ const Store = {
     if (!localStorage.getItem(STORAGE_KEYS.TRANSACTIONS)) {
       localStorage.setItem(STORAGE_KEYS.TRANSACTIONS, JSON.stringify(INITIAL_TRANSACTIONS));
     }
-    if (!localStorage.getItem(STORAGE_KEYS.CURRENCY)) {
-      localStorage.setItem(STORAGE_KEYS.CURRENCY, "PKR");
-    }
+    localStorage.setItem(STORAGE_KEYS.CURRENCY, "COIN");
+    
     if (!localStorage.getItem(STORAGE_KEYS.NOTIFICATIONS)) {
       localStorage.setItem(STORAGE_KEYS.NOTIFICATIONS, JSON.stringify([]));
     }
@@ -31,23 +30,15 @@ const Store = {
 
   // Currency
   getCurrency() {
-    const code = localStorage.getItem(STORAGE_KEYS.CURRENCY) || "PKR";
-    return CURRENCIES[code] || CURRENCIES.PKR;
+    return CURRENCIES.COIN;
   },
 
   setCurrency(code) {
-    if (CURRENCIES[code]) {
-      localStorage.setItem(STORAGE_KEYS.CURRENCY, code);
-    }
+    localStorage.setItem(STORAGE_KEYS.CURRENCY, "COIN");
   },
 
-  formatMoney(amountInPkr) {
-    const curr = this.getCurrency();
-    const converted = amountInPkr * curr.rate;
-    if (curr.code === "USD") {
-      return `${curr.symbol}${converted.toFixed(2)}`;
-    }
-    return `${curr.symbol}${Math.round(converted).toLocaleString()}`;
+  formatMoney(amount) {
+    return `💎 ${Math.round(amount).toLocaleString()}`;
   },
 
   // Tournaments
@@ -79,6 +70,16 @@ const Store = {
 
   saveUser(user) {
     localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
+    
+    // 🔥 AUTO-SYNC EVERY SINGLE USER DETAIL TO FIREBASE 🔥
+    if (typeof firebase !== 'undefined' && firebase.auth && firebase.firestore) {
+      const currentUser = firebase.auth().currentUser;
+      if (currentUser) {
+        firebase.firestore().collection("users").doc(currentUser.uid)
+          .set(user, { merge: true })
+          .catch(err => console.error("Firebase sync error:", err));
+      }
+    }
   },
 
   updateUserProfile(updatedFields) {
@@ -259,49 +260,6 @@ const Store = {
     list.unshift(newTx);
     localStorage.setItem(STORAGE_KEYS.TRANSACTIONS, JSON.stringify(list));
     return newTx;
-  },
-
-  // Admin Hooks (ready for incoming admin website)
-  adminAddTournament(newTourney) {
-    const list = this.getTournaments();
-    const id = `FF-${100 + list.length + 1}`;
-    const item = {
-      id,
-      joinedSlots: 0,
-      status: "upcoming",
-      ...newTourney
-    };
-    list.unshift(item);
-    this.saveTournaments(list);
-    return item;
-  },
-
-  adminUpdateRoom(id, roomId, roomPass) {
-    const list = this.getTournaments();
-    const idx = list.findIndex(t => t.id === id);
-    if (idx !== -1) {
-      list[idx].roomDetails.roomId = roomId;
-      list[idx].roomDetails.roomPass = roomPass;
-      this.saveTournaments(list);
-      return list[idx];
-    }
-    return null;
-  },
-
-  adminUpdateStatus(id, newStatus) {
-    const list = this.getTournaments();
-    const idx = list.findIndex(t => t.id === id);
-    if (idx !== -1) {
-      list[idx].status = newStatus;
-      this.saveTournaments(list);
-      return list[idx];
-    }
-    return null;
-  },
-
-  resetToDefaults() {
-    localStorage.clear();
-    this.init();
   }
 };
 

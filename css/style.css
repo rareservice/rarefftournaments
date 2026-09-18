@@ -663,7 +663,7 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: var(--glow-gold);
 }
 
-/* ==================== 4 GAME MODES GRID (BR Survival, BR PER KILL, 4V4, 2V2) ==================== */
+/* ==================== 4 GAME MODES GRID ==================== */
 .game-modes-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -1545,6 +1545,146 @@ h1, h2, h3, h4, h5, h6 {
   gap: 12px;
 }
 
+/* ==================== PAYMENT DETAILS MODAL STYLES ==================== */
+.pay-detail-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+
+.pay-detail-header {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  color: #fff;
+  font-size: 15px;
+}
+
+.pay-detail-body {
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.copy-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.copy-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: hidden;
+  flex: 1;
+}
+
+.copy-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.copy-val {
+  font-family: monospace;
+  font-size: 15px;
+  color: var(--accent-gold);
+  font-weight: 800;
+}
+
+.mobile-break {
+  word-break: break-all;
+  font-size: 13px;
+}
+
+.btn-copy {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.btn-copy:hover {
+  background: var(--accent-gold);
+  color: #000;
+  border-color: var(--accent-gold);
+  box-shadow: var(--glow-gold);
+}
+
+.whatsapp-contact-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 16px 20px;
+  border-radius: var(--radius-md);
+  color: #fff;
+  text-decoration: none;
+  transition: var(--transition);
+  margin-top: 6px;
+}
+
+.whatsapp-contact-card:hover {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: rgba(16, 185, 129, 0.5);
+}
+
+.whatsapp-contact-card b {
+  display: block;
+  color: var(--accent-green);
+  font-size: 15px;
+}
+
+.whatsapp-contact-card span {
+  display: block;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+/* File Input Modern Styling */
+input[type="file"].file-input-modern::file-selector-button {
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid var(--accent-gold);
+  color: var(--accent-gold);
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 12px;
+  font-weight: 700;
+  transition: var(--transition);
+}
+
+input[type="file"].file-input-modern::file-selector-button:hover {
+  background: var(--accent-gold);
+  color: #000;
+}
+
 /* Responsive Media Queries */
 @media (max-width: 1024px) {
   .hero-grid { grid-template-columns: 1fr; }
@@ -1579,4 +1719,28 @@ h1, h2, h3, h4, h5, h6 {
   .footer-grid { grid-template-columns: 1fr; }
   .game-modes-grid { grid-template-columns: 1fr; }
   .mode-card { height: 300px; }
+}
+
+@media (max-width: 480px) {
+  .copy-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .btn-copy {
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+  }
+  .mobile-break {
+    font-size: 11px;
+    line-height: 1.4;
+  }
+  .whatsapp-contact-card {
+    flex-direction: column;
+    text-align: center;
+  }
+  .whatsapp-contact-card b {
+    margin-bottom: 4px;
+  }
 }

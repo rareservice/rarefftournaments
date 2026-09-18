@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Rare FF Tournaments - Seed Data (No Dummy Data & INR Removed)
+   Rare FF Tournaments - Seed Data (No Dummy Data & PKR/USD Removed)
    ========================================================================== */
 
 const INITIAL_TOURNAMENTS = [];
@@ -20,7 +20,5 @@ const INITIAL_TRANSACTIONS = [];
 const LEADERBOARD_DATA = [];
 
 const CURRENCIES = {
-  PKR: { code: "PKR", symbol: "Rs. ", rate: 1, name: "Pakistani Rupee (PKR)" },
-  USD: { code: "USD", symbol: "$", rate: 0.0036, name: "US Dollar (USD)" },
   COIN: { code: "COIN", symbol: "💎 ", rate: 1, name: "Rare FF Coins" }
 };

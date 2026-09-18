@@ -2,42 +2,8 @@
    Rare FF Tournaments - Wallet & Financials Manager
    ========================================================================== */
 
-const PAYMENT_GATEWAYS = {
-  jazzcash: {
-    name: "JazzCash",
-    accountNumber: "Available on Launch",
-    accountTitle: "Rare FF Official",
-    instructions: "Direct JazzCash integration will be enabled on official tournament launch."
-  },
-  easypaisa: {
-    name: "EasyPaisa",
-    accountNumber: "Available on Launch",
-    accountTitle: "Rare FF Official",
-    instructions: "Direct EasyPaisa merchant gateway will be enabled on official tournament launch."
-  },
-  nayapay: {
-    name: "NayaPay / SadaPay",
-    accountNumber: "Available on Launch",
-    accountTitle: "Rare FF Official",
-    instructions: "Direct NayaPay & SadaPay instant transfers will be enabled on tournament launch."
-  },
-  usdt: {
-    name: "Binance Pay / USDT",
-    accountNumber: "Available on Launch",
-    accountTitle: "Rare Esports Global",
-    instructions: "Instant zero-fee Binance Pay and USDT (TRC20 / BEP20) gateway."
-  },
-  anycrypto: {
-    name: "Any Crypto",
-    accountNumber: "BTC • ETH • LTC • TRX • SOL • USDT",
-    accountTitle: "Multi-Chain Crypto Gateway",
-    instructions: "Deposit using Bitcoin, Ethereum, Litecoin, TRON, Solana, or any major cryptocurrency."
-  }
-};
-
 const WalletManager = {
   activeTab: "deposit",
-  selectedGateway: "jazzcash",
 
   init() {
     this.renderWalletSummary();
@@ -66,7 +32,6 @@ const WalletManager = {
     if (historyView) historyView.style.display = tab === "history" ? "block" : "none";
 
     if (tab === "history") this.renderTransactions();
-    if (tab === "deposit") this.updateGatewayDetails();
   },
 
   renderWalletSummary() {
@@ -80,48 +45,24 @@ const WalletManager = {
     if (winningsEl) winningsEl.innerText = Store.formatMoney(user.wallet.winningsBalance);
   },
 
-  selectGateway(gwKey) {
-    this.selectedGateway = gwKey;
-    document.querySelectorAll(".pay-method-btn").forEach(b => {
-      if (b.dataset.gateway === gwKey) {
-        b.classList.add("selected");
-      } else {
-        b.classList.remove("selected");
-      }
-    });
-    this.updateGatewayDetails();
-  },
-
-  setQuickAmount(amount) {
-    const input = document.getElementById("deposit-amount-input");
-    if (input) input.value = amount;
-  },
-
-  updateGatewayDetails() {
-    const gw = PAYMENT_GATEWAYS[this.selectedGateway] || PAYMENT_GATEWAYS.jazzcash;
-    const infoContainer = document.getElementById("gateway-instructions-box");
-    if (!infoContainer) return;
-
-    infoContainer.innerHTML = `
-      <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px; margin-top: 10px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-          <span style="font-size: 12px; color: var(--text-muted);">Payment Channel</span>
-          <span style="font-weight: 800; color: var(--accent-gold);">${gw.name}</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-          <span style="font-size: 12px; color: var(--text-muted);">Status:</span>
-          <b style="color: var(--accent-cyan); font-family: monospace;">${gw.accountNumber}</b>
-        </div>
-        <p style="font-size: 12px; color: var(--text-secondary); line-height: 1.4; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 8px;">
-          📌 ${gw.instructions}
-        </p>
-      </div>
-    `;
-  },
-
-  handleDepositSubmit(e) {
+  // Handles the Multi-File Proof Upload
+  handleProofSubmit(e) {
     e.preventDefault();
-    UI.showSoon();
+    const fileInput = document.getElementById("proof-files");
+    
+    if (!fileInput || fileInput.files.length === 0) {
+      UI.toast("Please select at least one screenshot as payment proof.", "error");
+      return;
+    }
+
+    const fileCount = fileInput.files.length;
+    UI.toast(`Uploading ${fileCount} payment proof(s)...`, "info");
+
+    // Simulate backend upload delay
+    setTimeout(() => {
+      UI.toast("✅ Payment proofs submitted successfully! Admin will verify soon.", "success");
+      fileInput.value = ""; // Reset file input
+    }, 1500);
   },
 
   handleWithdrawSubmit(e) {

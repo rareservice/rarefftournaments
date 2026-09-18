@@ -29,6 +29,60 @@ const UI = {
     }, 3200);
   },
 
+  // Robust Text Clipboard Copy (Supports Phones & Older Browsers + Button Update)
+  copyText(text, label = "Details", btnElement = null) {
+    const onSuccess = () => {
+      this.toast(`${label} copied to clipboard!`, "success");
+      if (btnElement) {
+        const originalHtml = btnElement.innerHTML;
+        btnElement.innerHTML = "✅ Successfully Copied";
+        btnElement.style.color = "var(--accent-green)";
+        btnElement.style.borderColor = "var(--accent-green)";
+        
+        setTimeout(() => {
+          btnElement.innerHTML = originalHtml;
+          btnElement.style.color = "";
+          btnElement.style.borderColor = "";
+        }, 5000);
+      }
+    };
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(() => {
+        onSuccess();
+      }).catch(() => {
+        this.fallbackCopyText(text, label, onSuccess);
+      });
+    } else {
+      this.fallbackCopyText(text, label, onSuccess);
+    }
+  },
+
+  fallbackCopyText(text, label, onSuccessCallback) {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    // Prevent zooming or scrolling on mobile
+    textArea.style.position = "fixed";
+    textArea.style.top = "0";
+    textArea.style.left = "0";
+    textArea.style.opacity = "0";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+      const successful = document.execCommand('copy');
+      if (successful) {
+        if (onSuccessCallback) onSuccessCallback();
+        else this.toast(`${label} copied to clipboard!`, "success");
+      } else {
+        this.toast("Failed to copy text. Please try manually.", "error");
+      }
+    } catch (err) {
+      this.toast("Failed to copy text.", "error");
+    }
+    document.body.removeChild(textArea);
+  },
+
   // Direct trigger for upcoming / dummy clickable items
   showSoon(featureName = "") {
     this.toast("Soon implemented", "soon");
@@ -53,7 +107,6 @@ const UI = {
 
   // Switch Active Page/Tab View
   switchView(viewName) {
-    // Nav link active status
     document.querySelectorAll(".nav-link").forEach(link => {
       if (link.dataset.view === viewName) {
         link.classList.add("active");
@@ -62,7 +115,6 @@ const UI = {
       }
     });
 
-    // Sections visibility
     const views = ["matches-view", "my-matches-view", "leaderboard-view", "rules-view", "support-view"];
     views.forEach(id => {
       const el = document.getElementById(id);
@@ -75,11 +127,9 @@ const UI = {
       }
     });
 
-    // Close mobile menu if open
     const navLinks = document.querySelector(".nav-links");
     if (navLinks) navLinks.classList.remove("mobile-open");
 
-    // Scroll to section
     const targetSection = document.getElementById(`${viewName}-view`);
     if (targetSection && viewName !== "matches") {
       targetSection.scrollIntoView({ behavior: "smooth" });
@@ -89,32 +139,22 @@ const UI = {
   // Update Top Bar & Header Profile
   updateHeader() {
     const user = Store.getUser();
-    const curr = Store.getCurrency();
 
-    // Wallet balance
     const walletDisplay = document.getElementById("nav-wallet-balance");
     if (walletDisplay) {
       walletDisplay.innerText = Store.formatMoney(user.wallet.totalBalance);
     }
 
-    // User display
     const userNameDisplay = document.getElementById("nav-user-ign");
     if (userNameDisplay) {
       userNameDisplay.innerText = user.ign || "Player";
     }
 
-    // Registered matches badge count
     const registeredBadge = document.getElementById("my-matches-badge");
     if (registeredBadge) {
       const count = (user.registeredMatchIds || []).length;
       registeredBadge.innerText = count;
       registeredBadge.style.display = count > 0 ? "inline-block" : "none";
-    }
-
-    // Currency selector
-    const currSelect = document.getElementById("currency-select");
-    if (currSelect) {
-      currSelect.value = curr.code;
     }
   },
 

@@ -4,11 +4,9 @@
 
 const AuthManager = {
   init() {
-    // Listen for real-time Firebase login state changes
     if (Store.isFirebaseActive()) {
       firebase.auth().onAuthStateChanged(async (firebaseUser) => {
         if (firebaseUser) {
-          // Fetch the latest user profile from Firestore when they log in
           try {
             const doc = await firebase.firestore().collection("users").doc(firebaseUser.uid).get();
             if (doc.exists) {
@@ -24,7 +22,6 @@ const AuthManager = {
         }
       });
     } else {
-      // Fallback if Firebase is not connected yet
       const user = Store.getUser();
       if (user && user.email) {
         this.updateUIForUser(user);
@@ -40,7 +37,6 @@ const AuthManager = {
   },
 
   switchAuthTab(tab) {
-    // Hide all forms safely
     const signinForm = document.getElementById("auth-form-signin");
     const signupForm = document.getElementById("auth-form-signup");
     const resetForm = document.getElementById("auth-form-reset");
@@ -49,10 +45,8 @@ const AuthManager = {
     if (signupForm) signupForm.style.display = "none";
     if (resetForm) resetForm.style.display = "none";
 
-    // Remove active styling from all tabs
     document.querySelectorAll(".auth-tab-btn").forEach(btn => btn.classList.remove("active"));
 
-    // Show target form and highlight tab
     if (tab === "signin") {
       if (signinForm) signinForm.style.display = "block";
       const btn = document.querySelector('[data-tab="signin"]');
@@ -65,7 +59,6 @@ const AuthManager = {
       if (resetForm) resetForm.style.display = "block";
     }
 
-    // Hide error message box
     const errMsg = document.getElementById("auth-error-msg");
     if (errMsg) errMsg.style.display = "none";
   },
@@ -82,12 +75,13 @@ const AuthManager = {
 
   async handleSignUp(e) {
     e.preventDefault();
-    const ign = document.getElementById("signup-ign").value.trim();
-    const ffuid = document.getElementById("signup-ffuid").value.trim();
-    const phone = document.getElementById("signup-phone").value.trim();
-    const email = document.getElementById("signup-email").value.trim();
-    const pass = document.getElementById("signup-pass").value;
-    const passConfirm = document.getElementById("signup-pass-confirm").value;
+    const ign = document.getElementById("signup-ign") ? document.getElementById("signup-ign").value.trim() : "";
+    const ffuid = document.getElementById("signup-ffuid") ? document.getElementById("signup-ffuid").value.trim() : "";
+    const phone = document.getElementById("signup-phone") ? document.getElementById("signup-phone").value.trim() : "";
+    const email = document.getElementById("signup-email") ? document.getElementById("signup-email").value.trim() : "";
+    const pass = document.getElementById("signup-pass") ? document.getElementById("signup-pass").value : "";
+    const passConfirmEl = document.getElementById("signup-pass-confirm");
+    const passConfirm = passConfirmEl ? passConfirmEl.value : pass;
 
     if (pass !== passConfirm) {
       this.showError("Passwords do not match!");
@@ -100,7 +94,6 @@ const AuthManager = {
         const userCred = await firebase.auth().createUserWithEmailAndPassword(email, pass);
         const uid = userCred.user.uid;
         
-        // Build new user profile structure
         const newUser = {
           id: uid,
           ign: ign,
@@ -112,7 +105,6 @@ const AuthManager = {
           registeredMatchIds: []
         };
 
-        // Save to Firestore
         await firebase.firestore().collection("users").doc(uid).set(newUser);
         Store.saveUser(newUser);
 
@@ -130,8 +122,8 @@ const AuthManager = {
 
   async handleSignIn(e) {
     e.preventDefault();
-    const email = document.getElementById("signin-email").value.trim();
-    const pass = document.getElementById("signin-pass").value;
+    const email = document.getElementById("signin-email") ? document.getElementById("signin-email").value.trim() : "";
+    const pass = document.getElementById("signin-pass") ? document.getElementById("signin-pass").value : "";
 
     if (Store.isFirebaseActive()) {
       try {
@@ -161,12 +153,10 @@ const AuthManager = {
         const result = await firebase.auth().signInWithPopup(provider);
         const uid = result.user.uid;
         
-        // Check if user already exists in Firestore database
         const doc = await firebase.firestore().collection("users").doc(uid).get();
         let userData;
         
         if (!doc.exists) {
-          // Create new profile for first-time Google Sign In
           userData = {
             id: uid,
             ign: result.user.displayName || "Player",
@@ -188,7 +178,11 @@ const AuthManager = {
         this.updateUIForUser(userData);
 
       } catch (error) {
-        UI.toast(error.message, "error");
+        if (error.code === "auth/unauthorized-domain") {
+          this.showError("Domain not authorized in Firebase. Add 'rarefftournaments.online' under Authentication > Settings > Authorized Domains.");
+        } else {
+          this.showError(error.message);
+        }
       }
     } else {
       UI.toast("Google Sign-In requires Firebase to be active.", "error");
@@ -197,7 +191,7 @@ const AuthManager = {
 
   async handlePasswordReset(e) {
     e.preventDefault();
-    const email = document.getElementById("reset-email").value.trim();
+    const email = document.getElementById("reset-email") ? document.getElementById("reset-email").value.trim() : "";
     
     if (Store.isFirebaseActive()) {
       try {
@@ -221,9 +215,8 @@ const AuthManager = {
       }
     }
     
-    // Wipe local storage user profile but keep tournaments loaded
     localStorage.removeItem("rare_ff_user_profile_v3");
-    Store.init(); // Resets back to Guest Player defaults
+    Store.init();
     
     UI.closeModal("profile-modal");
     UI.toast("Successfully signed out.", "info");
@@ -241,7 +234,6 @@ const AuthManager = {
       navIgn.innerText = user.ign;
     }
 
-    // Refresh UI headers and balances globally
     if (typeof UI !== 'undefined') {
       UI.updateHeader();
     }

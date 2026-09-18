@@ -1,6 +1,41 @@
 /* ==========================================================================
-   Rare FF Tournaments - Tournament Manager Component (No Dummy Data)
+   Rare FF Tournaments - Tournament Manager Component
    ========================================================================== */
+
+const GAME_MODES = [
+  {
+    id: "br-survival",
+    title: "BR Survival",
+    tag: "BATTLE ROYALE",
+    tagColor: "var(--accent-gold)",
+    desc: "Classic Survival Cup • Solo, Duo & Squad",
+    image: "https://cdn.discordapp.com/attachments/1539728895660785797/1550251269082316901/content.png?ex=6aada780&is=6aac5600&hm=c043c830eebee51c0bdedd875909a35ab1182861b71b8235f794a47a17ae8782"
+  },
+  {
+    id: "br-per-kill",
+    title: "BR PER KILL",
+    tag: "BOUNTY HUNTER",
+    tagColor: "var(--accent-orange)",
+    desc: "Earn Cash Per Elimination • Rush Mode",
+    image: "https://cdn.discordapp.com/attachments/1539728895660785797/1550251819920531536/content.png?ex=6aada804&is=6aac5684&hm=f96aebc9d0352ed17cf57d60addc476f40765100527052dbff19eec520a98c95"
+  },
+  {
+    id: "4v4",
+    title: "4V4",
+    tag: "CLASH SQUAD",
+    tagColor: "#c4b5fd",
+    desc: "Full Squad Tactical War • Competitive Store",
+    image: "https://cdn.discordapp.com/attachments/1539728895660785797/1550252358678745188/content.png?ex=6aada884&is=6aac5704&hm=4cca6762c4e199e1c0d85a68bf94843493a5c0eaa412d1d756ec1b836d926d44"
+  },
+  {
+    id: "2v2",
+    title: "2V2",
+    tag: "DUO CLASH",
+    tagColor: "var(--accent-cyan)",
+    desc: "Intense Duo Hardcore Battles • Fast Rounds",
+    image: "https://cdn.discordapp.com/attachments/1539728895660785797/1550252629165346886/content.png?ex=6aada8c5&is=6aac5745&hm=3ac159c4bd420b3dc420fc1a3074ba0ea699c5e50f839ea76793c2bc61cf6051"
+  }
+];
 
 const TournamentsManager = {
   currentFilter: "all",
@@ -30,6 +65,10 @@ const TournamentsManager = {
         this.renderTournaments();
       });
     }
+  },
+
+  selectMode(modeTitle) {
+    UI.toast(`⚔️ ${modeTitle}: Matches will be published soon by the admin team!`, "soon");
   },
 
   startCountdownInterval() {
@@ -68,13 +107,9 @@ const TournamentsManager = {
 
     if (filtered.length === 0) {
       grid.innerHTML = `
-        <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; background: var(--bg-card); border-radius: var(--radius-lg); border: 1px dashed var(--border-color);">
-          <div style="font-size: 48px; margin-bottom: 16px;">⚔️</div>
-          <h3 style="color: #fff; font-size: 20px; margin-bottom: 8px;">No Tournaments Scheduled Currently</h3>
-          <p style="color: var(--text-secondary); font-size: 14px; max-width: 480px; margin: 0 auto 20px; line-height: 1.6;">
-            Tournaments and Custom Room schedules will appear here as soon as they are published by the admin team.
-          </p>
-          <button class="btn-primary" onclick="UI.showSoon()">🔔 Notify Me On Launch</button>
+        <div style="grid-column: 1/-1; text-align: center; padding: 28px 20px; background: rgba(255,255,255,0.02); border-radius: var(--radius-lg); border: 1px dashed var(--border-color); margin-top: 10px;">
+          <h4 style="color: #fff; font-size: 16px; margin-bottom: 6px;">Select a Game Mode Above to View Live Matches</h4>
+          <p style="color: var(--text-secondary); font-size: 13px;">Official custom room match slots will be published soon by the admin team.</p>
         </div>
       `;
       return;
@@ -422,6 +457,11 @@ const TournamentsManager = {
         this.renderMyMatches();
       } else {
         UI.toast(res.message, "error");
+      }
+    }
+  }
+};
+```(res.message, "error");
       }
     }
   }

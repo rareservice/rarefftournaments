@@ -1,11 +1,7 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+/* ==========================================================================
+   Rare FF Tournaments - Firebase Configuration
+   ========================================================================== */
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyD8f9V7vbmFgsk0NUGaC2P9Nzia6xucssc",
   authDomain: "rare-ff-tournaments.firebaseapp.com",
@@ -16,6 +12,10 @@ const firebaseConfig = {
   measurementId: "G-R9EEK8BTVD"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+function isFirebaseConfigured() {
+  return (
+    typeof firebase !== "undefined" &&
+    firebaseConfig.apiKey &&
+    firebaseConfig.apiKey.startsWith("AIza")
+  );
+}

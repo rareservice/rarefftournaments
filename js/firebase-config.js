@@ -12,9 +12,17 @@ const firebaseConfig = {
   measurementId: "G-R9EEK8BTVD"
 };
 
+// Initialize Firebase automatically if it hasn't been initialized yet
+if (typeof firebase !== 'undefined') {
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+}
+
 function isFirebaseConfigured() {
   return (
     typeof firebase !== "undefined" &&
+    firebase.apps.length > 0 &&
     firebaseConfig.apiKey &&
     firebaseConfig.apiKey.startsWith("AIza")
   );

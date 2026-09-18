@@ -32,6 +32,7 @@ const WalletManager = {
     if (historyView) historyView.style.display = tab === "history" ? "block" : "none";
 
     if (tab === "history") this.renderTransactions();
+    if (tab === "deposit" || tab === "withdraw") this.renderWalletSummary();
   },
 
   renderWalletSummary() {
@@ -45,7 +46,6 @@ const WalletManager = {
     if (winningsEl) winningsEl.innerText = Store.formatMoney(user.wallet.winningsBalance);
   },
 
-  // Handles the Multi-File Proof Upload
   handleProofSubmit(e) {
     e.preventDefault();
     const fileInput = document.getElementById("proof-files");
@@ -55,19 +55,40 @@ const WalletManager = {
       return;
     }
 
-    const fileCount = fileInput.files.length;
-    UI.toast(`Uploading ${fileCount} payment proof(s)...`, "info");
+    const fileNames = Array.from(fileInput.files).map(f => f.name);
+    Store.requestDeposit(fileNames);
 
-    // Simulate backend upload delay
-    setTimeout(() => {
-      UI.toast("✅ Payment proofs submitted successfully! Admin will verify soon.", "success");
-      fileInput.value = ""; // Reset file input
-    }, 1500);
+    UI.toast("✅ Payment proofs submitted successfully! Admin will verify soon.", "success");
+    fileInput.value = ""; 
   },
 
   handleWithdrawSubmit(e) {
     e.preventDefault();
-    UI.showSoon();
+
+    const method = document.getElementById("withdraw-method-select").value;
+    const amount = document.getElementById("withdraw-amount-input").value;
+    const account = document.getElementById("withdraw-account-input").value;
+    const name = document.getElementById("withdraw-name-input").value;
+    
+    const fileInput = document.getElementById("withdraw-proof-file");
+    if (!fileInput || fileInput.files.length === 0) {
+      UI.toast("Please attach your Free Fire ID screenshot proof.", "error");
+      return;
+    }
+    const idProofFile = fileInput.files[0].name;
+
+    const result = Store.requestWithdrawal(amount, method, account, name, idProofFile);
+
+    if (result.success) {
+      UI.toast("Withdrawal requested successfully!", "success");
+      document.getElementById("withdraw-amount-input").value = "";
+      document.getElementById("withdraw-proof-file").value = "";
+      this.renderWalletSummary();
+      this.renderTransactions();
+      this.selectTab("history"); 
+    } else {
+      UI.toast(result.message, "error");
+    }
   },
 
   renderTransactions() {

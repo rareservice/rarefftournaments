@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rare FF Tournaments | Admin Panel</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@700;900&family=Rajdhani:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+  <header class="navbar" style="border-bottom-color: var(--accent-red);">
+    <div class="container nav-inner">
+      <div class="brand-logo">
+        <div class="logo-badge" style="background: var(--accent-red); box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);">🛡️</div>
+        <div class="logo-text-group">
+          <div class="logo-title">RARE <span>ADMIN</span></div>
+          <div class="logo-tagline" style="color: var(--accent-red);">[ Master Control Panel ]</div>
+        </div>
+      </div>
+      <div class="nav-actions">
+        <button class="btn-secondary" onclick="window.location.href='index.html'">🌐 View Public Site</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top: 24px; min-height: 80vh;">
+    
+    <!-- ADMIN NAVIGATION MENU -->
+    <div class="filter-tabs" style="display: grid; grid-template-columns: repeat(4, 1fr); text-align: center; margin-bottom: 32px; background: rgba(0,0,0,0.4); border: 1px solid var(--accent-red);">
+      <button class="admin-tab-btn tab-btn active" onclick="AdminManager.switchTab('tournaments', this)">🎮 Tournaments</button>
+      <button class="admin-tab-btn tab-btn" onclick="AdminManager.switchTab('deposits', this)">💰 Payment Area</button>
+      <button class="admin-tab-btn tab-btn" onclick="AdminManager.switchTab('withdrawals', this)">💸 Withdrawals</button>
+      <button class="admin-tab-btn tab-btn" onclick="AdminManager.switchTab('bookings', this)">⚔️ Slot Bookings</button>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- 1. TOURNAMENTS MANAGEMENT SECTION              -->
+    <!-- ============================================== -->
+    <div id="tab-tournaments" class="admin-section">
+      <section id="admin-home-view">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title"><span>⚙️</span> Tournament Management</h2>
+            <p class="section-subtitle">Select a game mode to create matches or update room credentials.</p>
+          </div>
+        </div>
+        <div class="game-modes-grid">
+          <div class="mode-card" onclick="AdminManager.openMode('BR Survival')">
+            <div class="mode-card-bg" style="background-image: url('https://cdn.discordapp.com/attachments/1539728895660785797/1550251269082316901/content.png?ex=6aada780&is=6aac5600&hm=c043c830eebee51c0bdedd875909a35ab1182861b71b8235f794a47a17ae8782');"></div>
+            <div class="mode-card-overlay"></div>
+            <div class="mode-card-content">
+              <span class="mode-tag">BATTLE ROYALE</span>
+              <h3 class="mode-title">BR Survival</h3>
+              <button class="btn-primary mode-btn" style="background: var(--accent-cyan); color: #000;">⚙️ Create Matches</button>
+            </div>
+          </div>
+          <div class="mode-card" onclick="AdminManager.openMode('BR PER KILL')">
+            <div class="mode-card-bg" style="background-image: url('https://cdn.discordapp.com/attachments/1539728895660785797/1550251819920531536/content.png?ex=6aada804&is=6aac5684&hm=f96aebc9d0352ed17cf57d60addc476f40765100527052dbff19eec520a98c95');"></div>
+            <div class="mode-card-overlay"></div>
+            <div class="mode-card-content">
+              <span class="mode-tag" style="background: rgba(255, 85, 0, 0.2); color: var(--accent-orange); border-color: rgba(255, 85, 0, 0.4);">BOUNTY HUNTER</span>
+              <h3 class="mode-title">BR PER KILL</h3>
+              <button class="btn-primary mode-btn" style="background: var(--accent-cyan); color: #000;">⚙️ Create Matches</button>
+            </div>
+          </div>
+          <div class="mode-card" onclick="AdminManager.openMode('4V4')">
+            <div class="mode-card-bg" style="background-image: url('https://cdn.discordapp.com/attachments/1539728895660785797/1550252358678745188/content.png?ex=6aada884&is=6aac5704&hm=4cca6762c4e199e1c0d85a68bf94843493a5c0eaa412d1d756ec1b836d926d44');"></div>
+            <div class="mode-card-overlay"></div>
+            <div class="mode-card-content">
+              <span class="mode-tag" style="background: rgba(139, 92, 246, 0.2); color: #c4b5fd; border-color: rgba(139, 92, 246, 0.4);">CLASH SQUAD</span>
+              <h3 class="mode-title">4V4</h3>
+              <button class="btn-primary mode-btn" style="background: var(--accent-cyan); color: #000;">⚙️ Create Matches</button>
+            </div>
+          </div>
+          <div class="mode-card" onclick="AdminManager.openMode('2V2')">
+            <div class="mode-card-bg" style="background-image: url('https://cdn.discordapp.com/attachments/1539728895660785797/1550252629165346886/content.png?ex=6aada8c5&is=6aac5745&hm=3ac159c4bd420b3dc420fc1a3074ba0ea699c5e50f839ea76793c2bc61cf6051');"></div>
+            <div class="mode-card-overlay"></div>
+            <div class="mode-card-content">
+              <span class="mode-tag" style="background: rgba(6, 182, 212, 0.2); color: var(--accent-cyan); border-color: rgba(6, 182, 212, 0.4);">DUO CLASH</span>
+              <h3 class="mode-title">2V2</h3>
+              <button class="btn-primary mode-btn" style="background: var(--accent-cyan); color: #000;">⚙️ Create Matches</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="admin-mode-view" style="display: none;">
+        <button class="btn-secondary" style="margin-bottom: 24px;" onclick="AdminManager.goBack()">⬅️ Back to Modes</button>
+        <div class="section-header">
+          <div><h2 class="section-title" id="admin-mode-title">Mode Name</h2><p class="section-subtitle">Manage existing matches or create a new one.</p></div>
+          <button class="btn-deposit-glow" style="padding: 12px 24px; font-size: 15px;" onclick="AdminManager.openAddMatchModal()">➕ Add New Match</button>
+        </div>
+        <div class="tournament-grid" id="admin-matches-grid"></div>
+      </section>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- 2. PAYMENT AREA (DEPOSITS) SECTION             -->
+    <!-- ============================================== -->
+    <div id="tab-deposits" class="admin-section" style="display: none;">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title"><span>💰</span> Payment Area (Deposits)</h2>
+          <p class="section-subtitle">Review user payment proofs, confirm, and assign coins.</p>
+        </div>
+      </div>
+      <div class="tournament-grid" id="admin-deposits-grid"></div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- 3. WITHDRAWALS SECTION                         -->
+    <!-- ============================================== -->
+    <div id="tab-withdrawals" class="admin-section" style="display: none;">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title"><span>💸</span> Withdrawal Requests</h2>
+          <p class="section-subtitle">Review and process player cashout requests.</p>
+        </div>
+      </div>
+      <div class="tournament-grid" id="admin-withdrawals-grid"></div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- 4. SLOT BOOKINGS SECTION                       -->
+    <!-- ============================================== -->
+    <div id="tab-bookings" class="admin-section" style="display: none;">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title"><span>⚔️</span> Match Details & Slot Bookings</h2>
+          <p class="section-subtitle">Live feed of all player tournament registrations.</p>
+        </div>
+      </div>
+      <div class="tournament-grid" id="admin-bookings-grid"></div>
+    </div>
+
+  </main>
+
+  <!-- ADD MATCH MODAL -->
+  <div class="modal-overlay" id="add-match-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 style="font-size: 18px; color: #fff;">➕ Create New Match</h3>
+        <button class="modal-close" onclick="UI.closeModal('add-match-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group"><label class="form-label">Tournament Title</label><input type="text" class="form-input" id="match-title" placeholder="e.g. Daily Solo Rush #1" /></div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+          <div class="form-group"><label class="form-label">Map</label><select class="form-select" id="match-map"><option value="Bermuda">Bermuda</option><option value="Purgatory">Purgatory</option><option value="Kalahari">Kalahari</option><option value="Alpine">Alpine</option><option value="Nexterra">Nexterra</option><option value="Random">Random Map</option></select></div>
+          <div class="form-group"><label class="form-label">Start Date & Time</label><input type="datetime-local" class="form-input" id="match-time" /></div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+          <div class="form-group"><label class="form-label">Total Slots</label><input type="number" class="form-input" id="match-slots" value="48" /></div>
+          <div class="form-group"><label class="form-label">Entry Fee (Coins)</label><input type="number" class="form-input" id="match-entry" value="50" /></div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+          <div class="form-group"><label class="form-label">Total Prize Pool (PKR)</label><input type="number" class="form-input" id="match-prize" value="1000" /></div>
+          <div class="form-group"><label class="form-label">Per Kill Reward (PKR)</label><input type="number" class="form-input" id="match-kill" value="10" /></div>
+        </div>
+        <button type="button" class="btn-primary" style="width: 100%; margin-top: 18px; justify-content: center;" onclick="AdminManager.saveNewMatch()">Save Match to Database</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ENTER ROOM DETAILS MODAL -->
+  <div class="modal-overlay" id="room-details-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 style="font-size: 18px; color: #fff;">🔑 Set Room Details</h3>
+        <button class="modal-close" onclick="UI.closeModal('room-details-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 10px;">These details will immediately be shared with all registered players in their "My Matches" tab.</p>
+        <input type="hidden" id="room-match-id" />
+        <div class="form-group"><label class="form-label">Custom Room ID *</label><input type="text" class="form-input" id="room-id-input" placeholder="Enter Free Fire Room ID" /></div>
+        <div class="form-group" style="margin-top: 12px;"><label class="form-label">Room Password *</label><input type="text" class="form-input" id="room-pass-input" placeholder="Enter Room Password" /></div>
+        <button type="button" class="btn-deposit-glow" style="width: 100%; margin-top: 18px; justify-content: center;" onclick="AdminManager.publishRoomDetails()">Publish Room Details</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toast-container"></div>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

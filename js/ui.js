@@ -3,7 +3,6 @@
    ========================================================================== */
 
 const UI = {
-  // Toast notifications
   toast(message, type = "info") {
     let container = document.getElementById("toast-container");
     if (!container) {
@@ -29,7 +28,6 @@ const UI = {
     }, 3200);
   },
 
-  // Robust Text Clipboard Copy (Supports Phones & Older Browsers + Button Update)
   copyText(text, label = "Details", btnElement = null) {
     const onSuccess = () => {
       this.toast(`${label} copied to clipboard!`, "success");
@@ -61,7 +59,6 @@ const UI = {
   fallbackCopyText(text, label, onSuccessCallback) {
     const textArea = document.createElement("textarea");
     textArea.value = text;
-    // Prevent zooming or scrolling on mobile
     textArea.style.position = "fixed";
     textArea.style.top = "0";
     textArea.style.left = "0";
@@ -83,12 +80,10 @@ const UI = {
     document.body.removeChild(textArea);
   },
 
-  // Direct trigger for upcoming / dummy clickable items
   showSoon(featureName = "") {
     this.toast("Soon implemented", "soon");
   },
 
-  // Modal helpers
   openModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
@@ -105,7 +100,6 @@ const UI = {
     }
   },
 
-  // Switch Active Page/Tab View
   switchView(viewName) {
     document.querySelectorAll(".nav-link").forEach(link => {
       if (link.dataset.view === viewName) {
@@ -136,10 +130,16 @@ const UI = {
     }
   },
 
-  // Update Top Bar & Header Profile
   updateHeader() {
     const user = Store.getUser();
 
+    // 1. Update the dropdown-style static coin balance at the very top left
+    const topCoinBalance = document.getElementById("nav-top-coin-balance");
+    if (topCoinBalance) {
+      topCoinBalance.innerText = `💎 ${user.wallet.totalBalance} Coins`;
+    }
+
+    // 2. Update the small wallet button inside the user profile actions
     const walletDisplay = document.getElementById("nav-wallet-balance");
     if (walletDisplay) {
       walletDisplay.innerText = Store.formatMoney(user.wallet.totalBalance);
@@ -158,7 +158,6 @@ const UI = {
     }
   },
 
-  // Format countdown string
   getCountdownString(targetIso) {
     const diff = new Date(targetIso) - new Date();
     if (diff <= 0) return "Match in Progress";
@@ -172,7 +171,6 @@ const UI = {
   }
 };
 
-// Global click outside modal to close
 document.addEventListener("click", e => {
   if (e.target.classList.contains("modal-overlay")) {
     e.target.classList.remove("active");

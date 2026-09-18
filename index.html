@@ -3,310 +3,173 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rare FF Tournaments [ Win Tournaments & Win Money ]</title>
-  
-  <!-- Google Fonts -->
+  <title>Rare FF Tournaments [ Win Tournaments & Win Coins ]</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@700;900&family=Rajdhani:wght@600;700;800&display=swap" rel="stylesheet" />
-
-  <!-- Stylesheet -->
   <link rel="stylesheet" href="css/style.css" />
-
-  <!-- Firebase Web SDK v10 (Compat version) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
-  <!-- Top Navigation Bar -->
   <header class="navbar">
     <div class="container nav-inner">
-      <!-- Brand Logo -->
       <a href="#" class="brand-logo" onclick="UI.switchView('matches'); return false;">
         <div class="logo-badge">🔥</div>
         <div class="logo-text-group">
           <div class="logo-title">RARE <span>FF</span></div>
-          <div class="logo-tagline">[ Win Tournaments & Win Money ]</div>
+          <div class="logo-tagline">[ Win Tournaments & Win Coins ]</div>
         </div>
       </a>
-
-      <!-- Desktop Nav Links -->
       <ul class="nav-links">
-        <li>
-          <a class="nav-link active" data-view="matches">
-            <span>🏟️</span> Arena
-          </a>
-        </li>
-        <li>
-          <a class="nav-link" data-view="my-matches">
-            <span>🎟️</span> My Matches
-            <span class="nav-badge-count" id="my-matches-badge" style="display: none;">0</span>
-          </a>
-        </li>
-        <li>
-          <a class="nav-link" data-view="leaderboard">
-            <span>🏆</span> Leaderboard
-          </a>
-        </li>
-        <li>
-          <a class="nav-link" data-view="rules">
-            <span>📜</span> Rules
-          </a>
-        </li>
-        <li>
-          <a class="nav-link" data-view="support">
-            <span>💬</span> Support
-          </a>
-        </li>
+        <li><a class="nav-link active" data-view="matches"><span>🏟️</span> Arena</a></li>
+        <li><a class="nav-link" data-view="my-matches"><span>🎟️</span> My Matches <span class="nav-badge-count" id="my-matches-badge" style="display: none;">0</span></a></li>
+        <li><a class="nav-link" data-view="leaderboard"><span>🏆</span> Leaderboard</a></li>
+        <li><a class="nav-link" data-view="rules"><span>📜</span> Rules</a></li>
+        <li><a class="nav-link" data-view="support"><span>💬</span> Support</a></li>
       </ul>
-
-      <!-- User Actions & Auth State -->
       <div class="nav-actions">
-        <!-- 1. GUEST ACTIONS (Visible when Logged Out) -->
-        <div id="nav-guest-actions" style="display: flex; align-items: center; gap: 8px;">
-          <button class="btn-secondary" style="padding: 7px 14px; font-size: 13px;" onclick="AuthManager.openAuthModal('signin')">
-            🔑 Log In
-          </button>
-          <button class="btn-deposit-glow" style="padding: 7px 14px; font-size: 13px;" onclick="AuthManager.openAuthModal('signup')">
-            Sign Up
-          </button>
+        <!-- Top Coin Balance Indicator -->
+        <div class="currency-select-wrap">
+          <div class="currency-select" style="display: flex; align-items: center; gap: 6px; cursor: default; padding: 7px 12px; background: #141b29; border: 1px solid rgba(255,255,255,0.2); border-radius: var(--radius-sm); font-size: 13px; font-weight: 700; color: #f8fafc;" title="Your Coin Balance">
+            <span id="nav-top-coin-balance">💎 0 Coins</span>
+          </div>
         </div>
-
-        <!-- 2. AUTHENTICATED USER ACTIONS (Visible when Logged In) -->
+        <div id="nav-guest-actions" style="display: flex; align-items: center; gap: 8px;">
+          <button class="btn-secondary" style="padding: 7px 14px; font-size: 13px;" onclick="AuthManager.openAuthModal('signin')">🔑 Log In</button>
+          <button class="btn-deposit-glow" style="padding: 7px 14px; font-size: 13px;" onclick="AuthManager.openAuthModal('signup')">Sign Up</button>
+        </div>
         <div id="nav-user-actions" style="display: none; align-items: center; gap: 10px;">
-          <!-- Wallet Quick Button -->
           <div class="wallet-btn-compact" onclick="UI.openModal('wallet-modal'); WalletManager.selectTab('deposit');" title="Open Wallet">
             <span>💳</span>
             <span class="wallet-amount" id="nav-wallet-balance">💎 0</span>
           </div>
-
-          <!-- Quick Deposit -->
-          <button class="btn-deposit-glow" onclick="UI.openModal('wallet-modal'); WalletManager.selectTab('deposit');">
-            <span>+</span> Deposit
-          </button>
-
-          <!-- User Profile Pill -->
-          <button class="user-profile-btn" id="btn-user-profile" title="View Profile & Settings">
-            <div class="user-avatar-mini">🎮</div>
-            <span id="nav-user-ign">Player</span>
-          </button>
+          <button class="btn-deposit-glow" onclick="UI.openModal('wallet-modal'); WalletManager.selectTab('deposit');"><span>+</span> Deposit</button>
+          <button class="user-profile-btn" id="btn-user-profile" title="View Profile & Settings"><div class="user-avatar-mini">🎮</div><span id="nav-user-ign">Player</span></button>
         </div>
-
-        <!-- Mobile Toggle -->
-        <button class="mobile-nav-toggle" id="mobile-nav-toggle" aria-label="Toggle Menu">
-          ☰
-        </button>
+        <button class="mobile-nav-toggle" id="mobile-nav-toggle" aria-label="Toggle Menu">☰</button>
       </div>
     </div>
   </header>
 
-  <!-- Live Notice Ticker -->
   <div class="notice-ticker">
     <div class="notice-inner">
       <span class="notice-badge">Official Portal</span>
-      <span>📢 Welcome to <b>Rare FF Tournaments [ Win Tournaments & Win Money ]</b>! Competitive Free Fire custom rooms with verified payouts via JazzCash, EasyPaisa, NayaPay, Binance Pay & Any Crypto.</span>
+      <span>📢 Welcome to <b>Rare FF Tournaments [ Win Tournaments & Win Coins ]</b>! Competitive Free Fire custom rooms.</span>
       <span class="notice-badge">Room Access</span>
-      <span>🔑 Custom Room ID & Password will unlock automatically 15 minutes before kickoff in your <b>'My Matches'</b> tab.</span>
+      <span>🔑 Custom Room ID & Password will unlock automatically in your <b>'My Matches'</b> tab.</span>
       <span class="notice-badge">Fair Play</span>
-      <span>🛡️ Strictly Mobile Devices Only. Zero Tolerance for emulators, hacks, panels, or modified game files.</span>
+      <span>🛡️ Strictly Mobile Devices Only. Zero Tolerance for emulators or hacks.</span>
     </div>
   </div>
 
   <main class="container">
     
-    <!-- Hero Section -->
     <section class="hero-section">
       <div class="hero-grid">
         <div class="hero-content">
-          <div class="hero-pill">
-            <div class="hero-pill-dot"></div>
-            <span>OFFICIAL COMPETITIVE ESPORTS PLATFORM</span>
-          </div>
-
-          <h1 class="hero-title">
-            DOMINATE THE BATTLEGROUND. <br />
-            <span class="gradient-text">WIN REAL MONEY.</span>
-          </h1>
-
-          <p class="hero-description">
-            Experience competitive Free Fire gaming at its finest. Join upcoming Solo, Duo, Squad, and Clash Squad custom tournaments. Earn cash rewards for every elimination and claim guaranteed payouts directly to your mobile wallet.
-          </p>
-
+          <div class="hero-pill"><div class="hero-pill-dot"></div><span>OFFICIAL COMPETITIVE ESPORTS PLATFORM</span></div>
+          <h1 class="hero-title">DOMINATE THE BATTLEGROUND. <br /><span class="gradient-text">WIN REAL COINS.</span></h1>
+          <p class="hero-description">Experience competitive Free Fire gaming at its finest. Join upcoming custom tournaments. Earn coins for every elimination and claim guaranteed payouts.</p>
           <div class="hero-actions">
-            <button class="btn-primary" onclick="UI.switchView('matches')">
-              ⚔️ Explore Arena
-            </button>
-            <button class="btn-secondary" onclick="UI.openModal('wallet-modal'); WalletManager.selectTab('deposit');">
-              💰 Deposit & Play
-            </button>
-            <button class="btn-secondary" onclick="UI.switchView('rules')">
-              📜 Read Fair Play Rules
-            </button>
+            <button class="btn-primary" onclick="UI.switchView('matches')">⚔️ Explore Arena</button>
+            <button class="btn-secondary" onclick="UI.openModal('wallet-modal'); WalletManager.selectTab('deposit');">💰 Deposit & Play</button>
+            <button class="btn-secondary" onclick="UI.switchView('rules')">📜 Read Fair Play Rules</button>
           </div>
         </div>
-
-        <!-- Hero Feature Card -->
         <div class="hero-feature-card">
           <div class="card-top-tag">
-            <span class="live-badge" style="background: rgba(245, 158, 11, 0.2); color: var(--accent-gold); border-color: rgba(245, 158, 11, 0.4);">
-              ⚡ UPCOMING TOURNAMENT SEASON
-            </span>
-            <span style="font-size: 12px; color: var(--accent-gold); font-weight: 800;">OFFICIAL LAUNCH</span>
+            <span class="live-badge" style="background: rgba(245, 158, 11, 0.2); color: var(--accent-gold); border-color: rgba(245, 158, 11, 0.4);">⚡ LIVE REGISTRATION</span>
+            <span style="font-size: 12px; color: var(--accent-gold); font-weight: 800;">SEASON 1</span>
           </div>
-
           <h3 style="font-size: 22px; color: #fff; margin-bottom: 6px;">Rare FF Championships</h3>
-          <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">
-            Solo Rush • Duo Showdowns • Squad Wars • Clash Squad 4v4
-          </p>
-
+          <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">Solo Rush • Duo Showdowns • Squad Wars • Clash Squad 4v4</p>
           <div style="background: rgba(0, 0, 0, 0.3); border: 1px dashed var(--border-color); border-radius: var(--radius-md); padding: 22px; text-align: center; margin-bottom: 16px;">
             <div style="font-size: 36px; margin-bottom: 8px;">🎮</div>
-            <div style="font-size: 16px; font-weight: 800; color: #fff;">Tournament Schedule Launching Soon</div>
-            <div style="font-size: 13px; color: var(--text-secondary); margin-top: 6px; line-height: 1.5;">
-              Custom room matches, cash prize pools, and live slot registrations will be published directly from the upcoming admin portal.
-            </div>
+            <div style="font-size: 16px; font-weight: 800; color: #fff;">Tournament Matches Are Live</div>
+            <div style="font-size: 13px; color: var(--text-secondary); margin-top: 6px; line-height: 1.5;">Click below to explore game modes, pick your specific slot, and enter the battleground!</div>
           </div>
-
-          <div class="hero-stats-row">
-            <div class="hero-stat-box" style="text-align: center;">
-              <div class="hero-stat-val text-gold">Mobile Only</div>
-              <div class="hero-stat-lbl">No Emulators Allowed</div>
-            </div>
-            <div class="hero-stat-box" style="text-align: center;">
-              <div class="hero-stat-val text-orange">Coins Per Kill</div>
-              <div class="hero-stat-lbl">Guaranteed Payouts</div>
-            </div>
-          </div>
-
-          <button class="btn-primary" style="width: 100%; margin-top: 18px; justify-content: center;" onclick="UI.showSoon()">
-            🔔 Get Notified On Next Match
-          </button>
+          <button class="btn-primary" style="width: 100%; margin-top: 18px; justify-content: center;" onclick="UI.switchView('matches')">⚔️ ENTER ARENA NOW</button>
         </div>
       </div>
     </section>
 
-    <!-- Global Value Pillars Ribbon -->
     <section class="stats-ribbon">
-      <div class="stat-item">
-        <div class="stat-icon">💰</div>
-        <div>
-          <div class="stat-number">Real Cash</div>
-          <div class="stat-title">Guaranteed Winnings & Kills</div>
-        </div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-icon">👥</div>
-        <div>
-          <div class="stat-number">Community</div>
-          <div class="stat-title">Verified Mobile Players</div>
-        </div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-icon">⚔️</div>
-        <div>
-          <div class="stat-number">Custom Rooms</div>
-          <div class="stat-title">Solo, Duo, Squad & CS</div>
-        </div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-icon">🛡️</div>
-        <div>
-          <div class="stat-number">100% Fair Play</div>
-          <div class="stat-title">Strict Anti-Cheat Policy</div>
-        </div>
-      </div>
+      <div class="stat-item"><div class="stat-icon">💎</div><div><div class="stat-number">Real Coins</div><div class="stat-title">Guaranteed Winnings</div></div></div>
+      <div class="stat-item"><div class="stat-icon">👥</div><div><div class="stat-number">Community</div><div class="stat-title">Verified Mobile Players</div></div></div>
+      <div class="stat-item"><div class="stat-icon">⚔️</div><div><div class="stat-number">Custom Rooms</div><div class="stat-title">Solo, Duo, Squad & CS</div></div></div>
+      <div class="stat-item"><div class="stat-icon">🛡️</div><div><div class="stat-number">100% Fair Play</div><div class="stat-title">Strict Anti-Cheat</div></div></div>
     </section>
 
     <!-- ==================== VIEW 1: TOURNAMENT ARENA ==================== -->
     <section id="matches-view">
-      <div class="section-header">
-        <div>
-          <h2 class="section-title"><span>🏟️</span> Tournament Arena</h2>
-          <p class="section-subtitle">Pick your game mode, lock in your Free Fire UID, and battle for real cash.</p>
+      
+      <!-- SUB-VIEW 1: Mode Selection (Grid of 4) -->
+      <div id="arena-home">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title"><span>🏟️</span> Tournament Arena</h2>
+            <p class="section-subtitle">Pick your game mode, secure your slot, and battle for PKR cash prizes.</p>
+          </div>
         </div>
 
-        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-          <input 
-            type="text" 
-            id="tourney-search-input" 
-            class="form-input" 
-            placeholder="Search map, mode, or ID..." 
-            style="padding: 8px 14px; font-size: 13px; width: 220px;"
-          />
-          <div class="filter-tabs">
-            <button class="tab-btn active" data-filter="all">All</button>
-            <button class="tab-btn" data-filter="solo">Solo</button>
-            <button class="tab-btn" data-filter="duo">Duo</button>
-            <button class="tab-btn" data-filter="squad">Squad</button>
-            <button class="tab-btn" data-filter="cs">Clash Squad</button>
-            <button class="tab-btn" data-filter="free">Free Entry</button>
+        <div class="game-modes-grid">
+          <div class="mode-card" onclick="TournamentsManager.openModeView('BR Survival')">
+            <div class="mode-card-bg" style="background-image: url('https://cdn.discordapp.com/attachments/1539728895660785797/1550251269082316901/content.png?ex=6aada780&is=6aac5600&hm=c043c830eebee51c0bdedd875909a35ab1182861b71b8235f794a47a17ae8782');"></div>
+            <div class="mode-card-overlay"></div>
+            <div class="mode-card-content">
+              <span class="mode-tag">BATTLE ROYALE</span>
+              <h3 class="mode-title">BR Survival</h3>
+              <p class="mode-subtitle">Classic Survival Cup • Solo, Duo & Squad</p>
+              <button class="btn-primary mode-btn"><span>⚔️</span> Check Matches</button>
+            </div>
+          </div>
+          <div class="mode-card" onclick="TournamentsManager.openModeView('BR PER KILL')">
+            <div class="mode-card-bg" style="background-image: url('https://cdn.discordapp.com/attachments/1539728895660785797/1550251819920531536/content.png?ex=6aada804&is=6aac5684&hm=f96aebc9d0352ed17cf57d60addc476f40765100527052dbff19eec520a98c95');"></div>
+            <div class="mode-card-overlay"></div>
+            <div class="mode-card-content">
+              <span class="mode-tag" style="background: rgba(255, 85, 0, 0.2); color: var(--accent-orange); border-color: rgba(255, 85, 0, 0.4);">BOUNTY HUNTER</span>
+              <h3 class="mode-title">BR PER KILL</h3>
+              <p class="mode-subtitle">Earn PKR Per Elimination • Rush Mode</p>
+              <button class="btn-primary mode-btn"><span>🎯</span> Check Matches</button>
+            </div>
+          </div>
+          <div class="mode-card" onclick="TournamentsManager.openModeView('4V4')">
+            <div class="mode-card-bg" style="background-image: url('https://cdn.discordapp.com/attachments/1539728895660785797/1550252358678745188/content.png?ex=6aada884&is=6aac5704&hm=4cca6762c4e199e1c0d85a68bf94843493a5c0eaa412d1d756ec1b836d926d44');"></div>
+            <div class="mode-card-overlay"></div>
+            <div class="mode-card-content">
+              <span class="mode-tag" style="background: rgba(139, 92, 246, 0.2); color: #c4b5fd; border-color: rgba(139, 92, 246, 0.4);">CLASH SQUAD</span>
+              <h3 class="mode-title">4V4</h3>
+              <p class="mode-subtitle">Full Squad Tactical War • Competitive Store</p>
+              <button class="btn-primary mode-btn"><span>🛡️</span> Check Matches</button>
+            </div>
+          </div>
+          <div class="mode-card" onclick="TournamentsManager.openModeView('2V2')">
+            <div class="mode-card-bg" style="background-image: url('https://cdn.discordapp.com/attachments/1539728895660785797/1550252629165346886/content.png?ex=6aada8c5&is=6aac5745&hm=3ac159c4bd420b3dc420fc1a3074ba0ea699c5e50f839ea76793c2bc61cf6051');"></div>
+            <div class="mode-card-overlay"></div>
+            <div class="mode-card-content">
+              <span class="mode-tag" style="background: rgba(6, 182, 212, 0.2); color: var(--accent-cyan); border-color: rgba(6, 182, 212, 0.4);">DUO CLASH</span>
+              <h3 class="mode-title">2V2</h3>
+              <p class="mode-subtitle">Intense Duo Hardcore Battles • Fast Rounds</p>
+              <button class="btn-primary mode-btn"><span>⚡</span> Check Matches</button>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- 4 Clickable Game Mode Cards -->
-      <div class="game-modes-grid">
-        <!-- 1. BR Survival -->
-        <div class="mode-card" onclick="TournamentsManager.selectMode('BR Survival')">
-          <div class="mode-card-bg" style="background-image: url('https://cdn.discordapp.com/attachments/1539728895660785797/1550251269082316901/content.png?ex=6aada780&is=6aac5600&hm=c043c830eebee51c0bdedd875909a35ab1182861b71b8235f794a47a17ae8782');"></div>
-          <div class="mode-card-overlay"></div>
-          <div class="mode-card-content">
-            <span class="mode-tag">BATTLE ROYALE</span>
-            <h3 class="mode-title">BR Survival</h3>
-            <p class="mode-subtitle">Classic Survival Cup • Solo, Duo & Squad</p>
-            <button class="btn-primary mode-btn">
-              <span>⚔️</span> Join Matches
-            </button>
+      <!-- SUB-VIEW 2: Match List for specific mode -->
+      <div id="arena-mode-details" style="display: none;">
+        <button class="btn-secondary" style="margin-bottom: 24px;" onclick="TournamentsManager.closeModeView()">⬅️ Back to Modes</button>
+        <div class="section-header">
+          <div>
+            <h2 class="section-title" id="public-mode-title">Mode Name</h2>
+            <p class="section-subtitle">Live and upcoming custom tournaments for this mode.</p>
           </div>
         </div>
-
-        <!-- 2. BR PER KILL -->
-        <div class="mode-card" onclick="TournamentsManager.selectMode('BR PER KILL')">
-          <div class="mode-card-bg" style="background-image: url('https://cdn.discordapp.com/attachments/1539728895660785797/1550251819920531536/content.png?ex=6aada804&is=6aac5684&hm=f96aebc9d0352ed17cf57d60addc476f40765100527052dbff19eec520a98c95');"></div>
-          <div class="mode-card-overlay"></div>
-          <div class="mode-card-content">
-            <span class="mode-tag" style="background: rgba(255, 85, 0, 0.2); color: var(--accent-orange); border-color: rgba(255, 85, 0, 0.4);">BOUNTY HUNTER</span>
-            <h3 class="mode-title">BR PER KILL</h3>
-            <p class="mode-subtitle">Earn Coins Per Elimination • Rush Mode</p>
-            <button class="btn-primary mode-btn">
-              <span>🎯</span> Join Matches
-            </button>
-          </div>
-        </div>
-
-        <!-- 3. 4V4 -->
-        <div class="mode-card" onclick="TournamentsManager.selectMode('4V4')">
-          <div class="mode-card-bg" style="background-image: url('https://cdn.discordapp.com/attachments/1539728895660785797/1550252358678745188/content.png?ex=6aada884&is=6aac5704&hm=4cca6762c4e199e1c0d85a68bf94843493a5c0eaa412d1d756ec1b836d926d44');"></div>
-          <div class="mode-card-overlay"></div>
-          <div class="mode-card-content">
-            <span class="mode-tag" style="background: rgba(139, 92, 246, 0.2); color: #c4b5fd; border-color: rgba(139, 92, 246, 0.4);">CLASH SQUAD</span>
-            <h3 class="mode-title">4V4</h3>
-            <p class="mode-subtitle">Full Squad Tactical War • Competitive Store</p>
-            <button class="btn-primary mode-btn">
-              <span>🛡️</span> Join Matches
-            </button>
-          </div>
-        </div>
-
-        <!-- 4. 2V2 -->
-        <div class="mode-card" onclick="TournamentsManager.selectMode('2V2')">
-          <div class="mode-card-bg" style="background-image: url('https://cdn.discordapp.com/attachments/1539728895660785797/1550252629165346886/content.png?ex=6aada8c5&is=6aac5745&hm=3ac159c4bd420b3dc420fc1a3074ba0ea699c5e50f839ea76793c2bc61cf6051');"></div>
-          <div class="mode-card-overlay"></div>
-          <div class="mode-card-content">
-            <span class="mode-tag" style="background: rgba(6, 182, 212, 0.2); color: var(--accent-cyan); border-color: rgba(6, 182, 212, 0.4);">DUO CLASH</span>
-            <h3 class="mode-title">2V2</h3>
-            <p class="mode-subtitle">Intense Duo Hardcore Battles • Fast Rounds</p>
-            <button class="btn-primary mode-btn">
-              <span>⚡</span> Join Matches
-            </button>
-          </div>
-        </div>
+        <div class="tournament-grid" id="tournaments-grid"></div>
       </div>
-
-      <!-- Tournament Matches List Grid -->
-      <div class="tournament-grid" id="tournaments-grid"></div>
     </section>
 
     <!-- ==================== VIEW 2: MY REGISTERED MATCHES ==================== -->
@@ -314,218 +177,56 @@
       <div class="section-header">
         <div>
           <h2 class="section-title"><span>🎟️</span> My Registered Tournaments</h2>
-          <p class="section-subtitle">View your booked matches, access custom Room ID & Password, and copy credentials directly into Free Fire.</p>
+          <p class="section-subtitle">View your booked matches, access custom Room ID & Password.</p>
         </div>
       </div>
-
       <div id="my-matches-list"></div>
     </section>
 
-    <!-- ==================== HOW IT WORKS SECTION ==================== -->
+    <!-- ==================== OTHER VIEWS (Leaderboard, Rules, Support) ==================== -->
     <section style="margin: 48px 0;">
-      <div class="section-header">
-        <div>
-          <h2 class="section-title"><span>⚡</span> How It Works</h2>
-          <p class="section-subtitle">Start competing and earning in four simple steps.</p>
-        </div>
-      </div>
-
+      <div class="section-header"><div><h2 class="section-title"><span>⚡</span> How It Works</h2></div></div>
       <div class="how-it-works-grid">
-        <div class="step-card">
-          <div class="step-number">1</div>
-          <h4 class="step-title">Create Account & Deposit</h4>
-          <p class="step-desc">Sign up and load your wallet easily via JazzCash, EasyPaisa, NayaPay, Binance USDT, or Any Crypto.</p>
-        </div>
-
-        <div class="step-card">
-          <div class="step-number">2</div>
-          <h4 class="step-title">Select Match & Register</h4>
-          <p class="step-desc">Choose from Solo, Duo, Squad, or Clash Squad. Enter your exact Free Fire In-Game Name and UID.</p>
-        </div>
-
-        <div class="step-card">
-          <div class="step-number">3</div>
-          <h4 class="step-title">Get Room ID & Password</h4>
-          <p class="step-desc">Credentials unlock 15 minutes before match kickoff in 'My Matches'. Copy Room ID and join in Free Fire.</p>
-        </div>
-
-        <div class="step-card">
-          <div class="step-number">4</div>
-          <h4 class="step-title">Win & Instant Cashout</h4>
-          <p class="step-desc">Eliminate enemies, survive to victory, and withdraw your earnings directly to your mobile wallet in 15 mins.</p>
-        </div>
+        <div class="step-card"><div class="step-number">1</div><h4 class="step-title">Create Account & Deposit</h4><p class="step-desc">Sign up and load your wallet easily via EasyPaisa or Any Crypto.</p></div>
+        <div class="step-card"><div class="step-number">2</div><h4 class="step-title">Select Match & Register</h4><p class="step-desc">Choose a mode, pick your desired specific slot, and enter your IGN.</p></div>
+        <div class="step-card"><div class="step-number">3</div><h4 class="step-title">Get Room ID & Password</h4><p class="step-desc">Credentials unlock automatically in 'My Matches' once the admin publishes them.</p></div>
+        <div class="step-card"><div class="step-number">4</div><h4 class="step-title">Win & Instant Cashout</h4><p class="step-desc">Eliminate enemies, survive to victory, and withdraw your coins to cash instantly.</p></div>
       </div>
     </section>
 
-    <!-- ==================== VIEW 3: LEADERBOARD ==================== -->
     <section id="leaderboard-view" style="display: none; margin-bottom: 48px;">
-      <div class="section-header">
-        <div>
-          <h2 class="section-title"><span>🏆</span> Champion Leaderboard</h2>
-          <p class="section-subtitle">Top earners and lethal fraggers across Rare FF Tournaments.</p>
-        </div>
-      </div>
-
+      <div class="section-header"><div><h2 class="section-title"><span>🏆</span> Champion Leaderboard</h2></div></div>
       <div class="leaderboard-card">
         <div class="leaderboard-podium" id="lb-podium"></div>
         <div style="overflow-x: auto;">
           <table class="lb-table">
-            <thead>
-              <tr>
-                <th>Rank</th>
-                <th>Player / IGN</th>
-                <th>Total Cash Won</th>
-                <th>Total Kills</th>
-                <th>Matches</th>
-                <th>Win Rate</th>
-              </tr>
-            </thead>
+            <thead><tr><th>Rank</th><th>Player / IGN</th><th>Total Coins Won</th><th>Total Kills</th><th>Matches</th></tr></thead>
             <tbody id="lb-tbody"></tbody>
           </table>
         </div>
       </div>
     </section>
 
-    <!-- ==================== VIEW 4: RULES & FAIR PLAY ==================== -->
     <section id="rules-view" style="display: none;">
-      <div class="section-header">
-        <div>
-          <h2 class="section-title"><span>📜</span> Official Rules & Fair Play Policy</h2>
-          <p class="section-subtitle">Strict competitive standards to guarantee a transparent, cheat-free esports experience.</p>
-        </div>
-      </div>
-
+      <div class="section-header"><div><h2 class="section-title"><span>📜</span> Official Rules & Fair Play Policy</h2></div></div>
       <div class="rules-grid">
-        <div class="rule-box">
-          <div class="rule-box-header">
-            <div class="rule-icon">🛡️</div>
-            <div>
-              <h3 style="color: #fff; font-size: 17px;">Anti-Cheat & Device Regulations</h3>
-              <span style="font-size: 12px; color: var(--accent-red); font-weight: 700;">ZERO TOLERANCE POLICY</span>
-            </div>
-          </div>
-          <ul class="rule-list">
-            <li><b>Mobile Only:</b> Emulators (Bluestacks, LDPlayer, Gameloop, etc.) are strictly prohibited. Emulators will be kicked from the room without refund.</li>
-            <li><b>No Hacks or Configs:</b> Any use of auto-aim, headshot configs, wallhacks, speed mods, or game-file manipulation will result in an immediate lifetime ban and forfeit of all wallet funds.</li>
-            <li><b>Teaming Up Prohibited:</b> Collaborating with opponents in Solo or Duo matches is strictly forbidden. Disqualification is instant.</li>
-            <li><b>Device Checks:</b> In high-stakes matches, tournament referees monitor live spectating feeds and game logs.</li>
-          </ul>
-        </div>
-
-        <div class="rule-box">
-          <div class="rule-box-header">
-            <div class="rule-icon safe">🎯</div>
-            <div>
-              <h3 style="color: #fff; font-size: 17px;">Custom Room Match Guidelines</h3>
-              <span style="font-size: 12px; color: var(--accent-green); font-weight: 700;">FAIR PLAY STANDARDS</span>
-            </div>
-          </div>
-          <ul class="rule-list">
-            <li><b>Punctuality:</b> The custom room will launch exactly at the scheduled time. If you do not enter the room before kickoff, no refund will be issued.</li>
-            <li><b>Assigned Slot:</b> You must sit in the slot number assigned to you in your 'My Matches' portal. Sitting in other players' slots will get you kicked by the referee.</li>
-            <li><b>Gun Attributes:</b> In all competitive matches, Gun Attributes are turned OFF to ensure raw skill supremacy.</li>
-            <li><b>Character Skills:</b> Character skills are enabled unless specifically designated as 'Skills OFF' in match details.</li>
-          </ul>
-        </div>
-
-        <div class="rule-box">
-          <div class="rule-box-header">
-            <div class="rule-icon safe">💵</div>
-            <div>
-              <h3 style="color: #fff; font-size: 17px;">Prize Payouts & Verification</h3>
-              <span style="font-size: 12px; color: var(--accent-gold); font-weight: 700;">GUARANTEED COIN CREDITS</span>
-            </div>
-          </div>
-          <ul class="rule-list">
-            <li><b>Automatic Log Processing:</b> Match kills and placements are cross-referenced with official referee scoreboards.</li>
-            <li><b>Screenshot Submission:</b> Winners are requested to share a screenshot of the end-game victory screen via WhatsApp for express verification.</li>
-            <li><b>Credited in 15-30 Mins:</b> Prize winnings are credited directly to your Withdrawable Winnings Balance within 30 minutes of match completion.</li>
-            <li><b>Instant Cashout:</b> Withdraw anytime with 0% deduction to JazzCash, EasyPaisa, NayaPay, Binance Pay, or Any Crypto.</li>
-          </ul>
-        </div>
-
-        <div class="rule-box">
-          <div class="rule-box-header">
-            <div class="rule-icon">⚠️</div>
-            <div>
-              <h3 style="color: #fff; font-size: 17px;">Cancellation & Technical Issues</h3>
-              <span style="font-size: 12px; color: var(--text-muted); font-weight: 700;">CONTINGENCY PROTOCOLS</span>
-            </div>
-          </div>
-          <ul class="rule-list">
-            <li><b>Player Cancellation:</b> You can cancel your tournament registration up to 30 minutes before match kickoff for a 100% instant refund.</li>
-            <li><b>Server Crash / Garena Glitch:</b> In the rare event of a server disconnect or room crash, the match will be remade, or all entry fees will be refunded immediately.</li>
-            <li><b>Dispute Window:</b> All disputes must be logged with support within 1 hour of match conclusion.</li>
-          </ul>
-        </div>
+        <div class="rule-box"><div class="rule-box-header"><div class="rule-icon">🛡️</div><div><h3 style="color: #fff; font-size: 17px;">Anti-Cheat & Device Regulations</h3><span style="font-size: 12px; color: var(--accent-red); font-weight: 700;">ZERO TOLERANCE POLICY</span></div></div><ul class="rule-list"><li><b>Mobile Only:</b> Emulators are strictly prohibited. Kicked without refund.</li><li><b>No Hacks or Configs:</b> Lifetime ban and forfeit of all wallet funds.</li><li><b>Teaming Up Prohibited:</b> Disqualification is instant.</li></ul></div>
+        <div class="rule-box"><div class="rule-box-header"><div class="rule-icon safe">🎯</div><div><h3 style="color: #fff; font-size: 17px;">Custom Room Match Guidelines</h3><span style="font-size: 12px; color: var(--accent-green); font-weight: 700;">FAIR PLAY STANDARDS</span></div></div><ul class="rule-list"><li><b>Punctuality:</b> Room launches exactly at scheduled time. No refund for late entry.</li><li><b>Assigned Slot:</b> You must sit in your exact chosen slot number. Sitting in wrong slot = kick.</li><li><b>Gun Attributes:</b> OFF to ensure raw skill supremacy.</li></ul></div>
+        <div class="rule-box"><div class="rule-box-header"><div class="rule-icon safe">💎</div><div><h3 style="color: #fff; font-size: 17px;">Prize Payouts & Verification</h3><span style="font-size: 12px; color: var(--accent-gold); font-weight: 700;">GUARANTEED COIN CREDITS</span></div></div><ul class="rule-list"><li><b>Automatic Processing:</b> Kills cross-referenced with referee boards.</li><li><b>Screenshot Submission:</b> Winners share screenshot via WhatsApp.</li><li><b>Instant Withdrawal:</b> Withdraw anytime with 0% deduction to EasyPaisa or Crypto.</li></ul></div>
+        <div class="rule-box"><div class="rule-box-header"><div class="rule-icon">⚠️</div><div><h3 style="color: #fff; font-size: 17px;">Cancellation & Technical Issues</h3><span style="font-size: 12px; color: var(--text-muted); font-weight: 700;">CONTINGENCY PROTOCOLS</span></div></div><ul class="rule-list"><li><b>Player Cancellation:</b> Cancel up to 30 mins before kickoff for refund.</li><li><b>Server Crash:</b> Match remade or entry fees refunded immediately.</li></ul></div>
       </div>
     </section>
 
-    <!-- ==================== VIEW 5: SUPPORT (OFFICIAL WHATSAPP) ==================== -->
     <section id="support-view" style="display: none;">
-      <div class="section-header">
-        <div>
-          <h2 class="section-title"><span>💬</span> Support & Assistance</h2>
-          <p class="section-subtitle">Need help with deposits, withdrawals, or room access? Contact our official support directly.</p>
-        </div>
-      </div>
-
+      <div class="section-header"><div><h2 class="section-title"><span>💬</span> Support & Assistance</h2></div></div>
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 48px;">
-        <!-- Official WhatsApp Support Box -->
         <div class="rule-box">
           <h3 style="color: #fff; font-size: 18px; margin-bottom: 12px;">Official WhatsApp Support</h3>
-          <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 20px;">
-            Need help with room access, slot registrations, or prize payouts? Contact our official WhatsApp support directly.
-          </p>
-
           <div>
             <a href="https://wa.me/923430821414?text=Hello%20Rare%20FF%20Support" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: center; justify-content: space-between; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.4); padding: 18px 20px; border-radius: var(--radius-md); text-decoration: none; color: #fff; transition: var(--transition);">
-              <div style="display: flex; align-items: center; gap: 14px;">
-                <span style="font-size: 32px;">💬</span>
-                <div>
-                  <b style="color: var(--accent-green); font-size: 16px; display: block;">WhatsApp Support Helpline</b>
-                  <span style="display: block; font-size: 15px; color: #fff; font-family: monospace; font-weight: 800; margin-top: 4px;">+92 343 0821414</span>
-                  <span style="display: block; font-size: 12px; color: var(--text-muted); margin-top: 2px;">Available 24/7 for Direct Assistance</span>
-                </div>
-              </div>
-              <span class="btn-deposit-glow" style="padding: 10px 18px; font-size: 13px; background: linear-gradient(135deg, #10b981, #059669); color: #fff;">
-                Chat on WhatsApp
-              </span>
+              <div style="display: flex; align-items: center; gap: 14px;"><span style="font-size: 32px;">💬</span><div><b style="color: var(--accent-green); font-size: 16px; display: block;">WhatsApp Support Helpline</b><span style="display: block; font-size: 15px; color: #fff; font-family: monospace; font-weight: 800; margin-top: 4px;">+92 343 0821414</span></div></div>
+              <span class="btn-deposit-glow" style="padding: 10px 18px; font-size: 13px; background: linear-gradient(135deg, #10b981, #059669); color: #fff;">Chat</span>
             </a>
-          </div>
-        </div>
-
-        <!-- FAQ Accordion -->
-        <div class="rule-box">
-          <h3 style="color: #fff; font-size: 18px; margin-bottom: 12px;">Frequently Asked Questions</h3>
-          <div style="display: flex; flex-direction: column; gap: 10px;">
-            <details style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
-              <summary style="font-weight: 700; color: #fff; cursor: pointer; font-size: 14px;">How do I get my Custom Room ID & Password?</summary>
-              <p style="font-size: 13px; color: var(--text-secondary); margin-top: 8px; line-height: 1.5;">
-                After registering for any tournament, go to the <b>'My Matches'</b> tab. The Room ID and Password will automatically reveal 15 minutes prior to the start time with a 1-click copy button.
-              </p>
-            </details>
-
-            <details style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
-              <summary style="font-weight: 700; color: #fff; cursor: pointer; font-size: 14px;">How are per-kill rewards calculated?</summary>
-              <p style="font-size: 13px; color: var(--text-secondary); margin-top: 8px; line-height: 1.5;">
-                Each tournament specifies a per-kill reward. Even if your team does not win Booyah, every verified elimination made by your registered UID earns coins credited straight to your winnings balance.
-              </p>
-            </details>
-
-            <details style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
-              <summary style="font-weight: 700; color: #fff; cursor: pointer; font-size: 14px;">How fast are wallet withdrawals processed?</summary>
-              <p style="font-size: 13px; color: var(--text-secondary); margin-top: 8px; line-height: 1.5;">
-                Withdrawals to JazzCash, EasyPaisa, NayaPay, Binance Pay, and Any Crypto are processed within 15 to 30 minutes following tournament completion and result verification.
-              </p>
-            </details>
-
-            <details style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
-              <summary style="font-weight: 700; color: #fff; cursor: pointer; font-size: 14px;">Can PC / Emulator players join?</summary>
-              <p style="font-size: 13px; color: var(--text-secondary); margin-top: 8px; line-height: 1.5;">
-                No. To maintain fairness for competitive mobile athletes, all our official lobbies strictly enforce mobile-only play. Emulators are detected and blocked.
-              </p>
-            </details>
           </div>
         </div>
       </div>
@@ -533,59 +234,29 @@
 
   </main>
 
-  <!-- ==================== 3-COLUMN FOOTER ==================== -->
   <footer class="footer">
     <div class="container">
       <div class="footer-grid">
         <div class="footer-col">
           <div class="brand-logo" style="margin-bottom: 14px;">
             <div class="logo-badge">🔥</div>
-            <div class="logo-text-group">
-              <div class="logo-title">RARE <span>FF</span></div>
-              <div class="logo-tagline">[ Win Tournaments & Win Money ]</div>
-            </div>
+            <div class="logo-text-group"><div class="logo-title">RARE <span>FF</span></div><div class="logo-tagline">[ Win Tournaments & Win Coins ]</div></div>
           </div>
-          <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.6; max-width: 320px;">
-            The premier Free Fire tournament platform in Pakistan. Compete in daily custom rooms, win real cash per kill, and withdraw instantly with zero hassle.
-          </p>
-        </div>
-
-        <div class="footer-col">
-          <h4>Navigation</h4>
-          <ul class="footer-links">
-            <li><a href="#" onclick="UI.switchView('matches'); return false;">Tournament Arena</a></li>
-            <li><a href="#" onclick="UI.switchView('my-matches'); return false;">My Matches & Room ID</a></li>
-            <li><a href="#" onclick="UI.switchView('leaderboard'); return false;">Top Winners & Fraggers</a></li>
-            <li><a href="#" onclick="UI.switchView('rules'); return false;">Fair Play & Anti-Cheat</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-col">
-          <h4>Payment Methods</h4>
-          <ul class="footer-links">
-            <li><span style="color: var(--text-secondary);">• JazzCash Instant</span></li>
-            <li><span style="color: var(--text-secondary);">• EasyPaisa Mobile</span></li>
-            <li><span style="color: var(--text-secondary);">• NayaPay / SadaPay</span></li>
-            <li><span style="color: var(--text-secondary);">• Binance Pay / USDT</span></li>
-            <li><span style="color: var(--text-secondary);">• Any Crypto</span></li>
-          </ul>
+          <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.6; max-width: 320px;">The premier Free Fire tournament platform. Compete in daily custom rooms, win coins per kill, and withdraw instantly with zero hassle.</p>
         </div>
       </div>
-
       <div class="footer-bottom">
-        <div>© 2026 <b>Rare FF Tournaments</b>. All rights reserved. Not affiliated with or endorsed by Garena.</div>
+        <div>© 2026 <b>Rare FF Tournaments</b>. All rights reserved.</div>
         <div style="display: flex; gap: 16px; align-items: center;">
-          <a href="https://wa.me/923430821414?text=Hello%20Rare%20FF%20Support" target="_blank" rel="noopener noreferrer" style="color: var(--accent-green); text-decoration: none; font-weight: 600;">
-            💬 WhatsApp: +92 343 0821414
-          </a>
-          <a href="#" onclick="UI.showSoon(); return false;" style="color: var(--text-muted); text-decoration: none;">Terms of Service</a>
-          <a href="#" onclick="UI.showSoon(); return false;" style="color: var(--text-muted); text-decoration: none;">Privacy Policy</a>
+          <a href="https://wa.me/923430821414?text=Hello%20Rare%20FF%20Support" target="_blank" style="color: var(--accent-green); text-decoration: none; font-weight: 600;">💬 WhatsApp: +92 343 0821414</a>
         </div>
       </div>
     </div>
   </footer>
 
-  <!-- ==================== AUTHENTICATION MODAL ==================== -->
+  <!-- ==================== MODALS ==================== -->
+  
+  <!-- AUTH MODAL -->
   <div class="modal-overlay" id="auth-modal">
     <div class="modal-card" style="max-width: 480px;">
       <div class="modal-header">
@@ -597,169 +268,40 @@
       </div>
       <div class="modal-body">
         <div class="filter-tabs" style="width: 100%; display: grid; grid-template-columns: 1fr 1fr; text-align: center;">
-          <button class="auth-tab-btn tab-btn active" data-tab="signin">Sign In</button>
-          <button class="auth-tab-btn tab-btn" data-tab="signup">Create Account</button>
+          <button class="auth-tab-btn tab-btn active" data-tab="signin" onclick="AuthManager.switchAuthTab('signin')">Sign In</button>
+          <button class="auth-tab-btn tab-btn" data-tab="signup" onclick="AuthManager.switchAuthTab('signup')">Create Account</button>
         </div>
-
         <div id="auth-error-msg" style="display: none; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #fca5a5; padding: 10px 14px; border-radius: var(--radius-sm); font-size: 13px;"></div>
-
-        <!-- 1. SIGN IN FORM -->
+        
         <form id="auth-form-signin" onsubmit="AuthManager.handleSignIn(event)">
-          <div class="form-group">
-            <label class="form-label">Email Address *</label>
-            <input type="email" class="form-input" id="signin-email" placeholder="player@example.com" required />
-          </div>
-
-          <div class="form-group" style="margin-top: 12px;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <label class="form-label">Password *</label>
-              <a href="#" onclick="AuthManager.switchAuthTab('reset'); return false;" style="font-size: 12px; color: var(--accent-gold); text-decoration: none;">Forgot Password?</a>
-            </div>
-            <input type="password" class="form-input" id="signin-pass" placeholder="••••••••" required />
-          </div>
-
-          <button type="submit" id="btn-submit-signin" class="btn-primary" style="width: 100%; margin-top: 18px; justify-content: center;">
-            Sign In to Play
-          </button>
-
-          <div style="text-align: center; margin: 14px 0 10px; font-size: 12px; color: var(--text-muted); position: relative;">
-            <span style="background: var(--bg-card); padding: 0 10px; position: relative; z-index: 2;">OR</span>
-            <div style="position: absolute; top: 50%; left: 0; right: 0; border-top: 1px solid var(--border-color); z-index: 1;"></div>
-          </div>
-
-          <!-- Google Sign In with Official 4-Color Google Logo -->
-          <button type="button" class="btn-secondary" style="width: 100%; justify-content: center; gap: 10px; font-weight: 700;" onclick="AuthManager.handleGoogleSignIn()">
-            <svg width="18" height="18" viewBox="0 0 24 24" style="display: inline-block; vertical-align: middle;">
-              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-            </svg>
-            <span>Continue with Google</span>
-          </button>
-
-          <p style="font-size: 13px; color: var(--text-secondary); text-align: center; margin-top: 16px;">
-            Don't have an account? <a href="#" onclick="AuthManager.switchAuthTab('signup'); return false;" style="color: var(--accent-gold); font-weight: 700; text-decoration: none;">Sign Up</a>
-          </p>
+          <div class="form-group"><label class="form-label">Email Address *</label><input type="email" class="form-input" id="signin-email" required /></div>
+          <div class="form-group" style="margin-top: 12px;"><label class="form-label">Password *</label><input type="password" class="form-input" id="signin-pass" required /></div>
+          <button type="submit" class="btn-primary" style="width: 100%; margin-top: 18px; justify-content: center;">Sign In to Play</button>
         </form>
 
-        <!-- 2. SIGN UP FORM -->
         <form id="auth-form-signup" style="display: none;" onsubmit="AuthManager.handleSignUp(event)">
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-            <div class="form-group">
-              <label class="form-label">Full Name</label>
-              <input type="text" class="form-input" id="signup-name" placeholder="Your Name" />
-            </div>
-            <div class="form-group">
-              <label class="form-label">In-Game Name (IGN) *</label>
-              <input type="text" class="form-input" id="signup-ign" placeholder="e.g. RARE_VIPER" required />
-            </div>
-          </div>
-
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
-            <div class="form-group">
-              <label class="form-label">Free Fire UID *</label>
-              <input type="text" class="form-input" id="signup-ffuid" placeholder="8-12 digits" pattern="[0-9]{8,12}" required title="8 to 12 digit Free Fire UID" />
-            </div>
-            <div class="form-group">
-              <label class="form-label">WhatsApp / Phone *</label>
-              <input type="text" class="form-input" id="signup-phone" placeholder="+92 300 1234567" required />
-            </div>
-          </div>
-
-          <div class="form-group" style="margin-top: 10px;">
-            <label class="form-label">Email Address *</label>
-            <input type="email" class="form-input" id="signup-email" placeholder="player@example.com" required />
-          </div>
-
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
-            <div class="form-group">
-              <label class="form-label">Password *</label>
-              <input type="password" class="form-input" id="signup-pass" placeholder="Min 6 chars" minlength="6" required />
-            </div>
-            <div class="form-group">
-              <label class="form-label">Confirm Password *</label>
-              <input type="password" class="form-input" id="signup-pass-confirm" placeholder="Repeat password" minlength="6" required />
-            </div>
-          </div>
-
-          <div style="margin-top: 12px; font-size: 12px; color: var(--text-secondary); display: flex; align-items: flex-start; gap: 8px;">
-            <input type="checkbox" id="signup-agree" required checked style="margin-top: 3px;" />
-            <label for="signup-agree">I agree to the Fair Play & Anti-Cheat Rules (Mobile devices only, no emulators).</label>
-          </div>
-
-          <button type="submit" id="btn-submit-signup" class="btn-primary" style="width: 100%; margin-top: 16px; justify-content: center;">
-            Create Player Account
-          </button>
-
-          <div style="text-align: center; margin: 12px 0 8px; font-size: 12px; color: var(--text-muted); position: relative;">
-            <span style="background: var(--bg-card); padding: 0 10px; position: relative; z-index: 2;">OR</span>
-            <div style="position: absolute; top: 50%; left: 0; right: 0; border-top: 1px solid var(--border-color); z-index: 1;"></div>
-          </div>
-
-          <!-- Google Sign Up with Official 4-Color Google Logo -->
-          <button type="button" class="btn-secondary" style="width: 100%; justify-content: center; gap: 10px; font-weight: 700;" onclick="AuthManager.handleGoogleSignIn()">
-            <svg width="18" height="18" viewBox="0 0 24 24" style="display: inline-block; vertical-align: middle;">
-              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-            </svg>
-            <span>Sign Up with Google</span>
-          </button>
-
-          <p style="font-size: 13px; color: var(--text-secondary); text-align: center; margin-top: 14px;">
-            Already have an account? <a href="#" onclick="AuthManager.switchAuthTab('signin'); return false;" style="color: var(--accent-gold); font-weight: 700; text-decoration: none;">Sign In</a>
-          </p>
-        </form>
-
-        <!-- 3. FORGOT PASSWORD RESET FORM -->
-        <form id="auth-form-reset" style="display: none;" onsubmit="AuthManager.handlePasswordReset(event)">
-          <div class="form-group">
-            <label class="form-label">Account Email Address *</label>
-            <input type="email" class="form-input" id="reset-email" placeholder="player@example.com" required />
-          </div>
-
-          <p style="font-size: 12px; color: var(--text-secondary); margin-top: 8px;">
-            Enter your registered email address and we'll send you an official password reset link.
-          </p>
-
-          <button type="submit" class="btn-primary" style="width: 100%; margin-top: 16px; justify-content: center;">
-            Send Password Reset Link
-          </button>
-
-          <p style="font-size: 13px; color: var(--text-secondary); text-align: center; margin-top: 14px;">
-            Remember your password? <a href="#" onclick="AuthManager.switchAuthTab('signin'); return false;" style="color: var(--accent-gold); font-weight: 700; text-decoration: none;">Back to Sign In</a>
-          </p>
+          <div class="form-group"><label class="form-label">In-Game Name (IGN) *</label><input type="text" class="form-input" id="signup-ign" required /></div>
+          <div class="form-group"><label class="form-label">Free Fire UID *</label><input type="text" class="form-input" id="signup-ffuid" required /></div>
+          <div class="form-group"><label class="form-label">Email Address *</label><input type="email" class="form-input" id="signup-email" required /></div>
+          <div class="form-group"><label class="form-label">Password *</label><input type="password" class="form-input" id="signup-pass" required /></div>
+          <button type="submit" class="btn-primary" style="width: 100%; margin-top: 16px; justify-content: center;">Create Player Account</button>
         </form>
       </div>
     </div>
   </div>
 
-  <!-- WALLET & DEPOSIT MODAL -->
+  <!-- WALLET MODAL -->
   <div class="modal-overlay" id="wallet-modal">
     <div class="modal-card" style="max-width: 580px;">
       <div class="modal-header">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <span style="font-size: 20px;">💳</span>
-          <h3 style="font-size: 18px; color: #fff;">Player Wallet & Banking</h3>
-        </div>
+        <div style="display: flex; align-items: center; gap: 10px;"><span style="font-size: 20px;">💳</span><h3 style="font-size: 18px; color: #fff;">Player Wallet & Banking</h3></div>
         <button class="modal-close" onclick="UI.closeModal('wallet-modal')">✕</button>
       </div>
       <div class="modal-body">
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; background: rgba(0,0,0,0.4); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px; text-align: center;">
-          <div>
-            <span style="font-size: 11px; color: var(--text-muted); display: block; text-transform: uppercase;">Total Balance</span>
-            <span style="font-size: 18px; font-weight: 800; color: var(--accent-gold); font-family: var(--font-heading);" id="wallet-total-bal">💎 0</span>
-          </div>
-          <div>
-            <span style="font-size: 11px; color: var(--text-muted); display: block; text-transform: uppercase;">Deposit Balance</span>
-            <span style="font-size: 18px; font-weight: 800; color: #cbd5e1; font-family: var(--font-heading);" id="wallet-deposit-bal">💎 0</span>
-          </div>
-          <div>
-            <span style="font-size: 11px; color: var(--text-muted); display: block; text-transform: uppercase;">Winnings Balance</span>
-            <span style="font-size: 18px; font-weight: 800; color: var(--accent-green); font-family: var(--font-heading);" id="wallet-winnings-bal">💎 0</span>
-          </div>
+          <div><span style="font-size: 11px; color: var(--text-muted); display: block; text-transform: uppercase;">Total Balance</span><span style="font-size: 18px; font-weight: 800; color: var(--accent-gold); font-family: var(--font-heading);" id="wallet-total-bal">💎 0</span></div>
+          <div><span style="font-size: 11px; color: var(--text-muted); display: block; text-transform: uppercase;">Deposit Balance</span><span style="font-size: 18px; font-weight: 800; color: #cbd5e1; font-family: var(--font-heading);" id="wallet-deposit-bal">💎 0</span></div>
+          <div><span style="font-size: 11px; color: var(--text-muted); display: block; text-transform: uppercase;">Winnings Balance</span><span style="font-size: 18px; font-weight: 800; color: var(--accent-green); font-family: var(--font-heading);" id="wallet-winnings-bal">💎 0</span></div>
         </div>
 
         <div class="filter-tabs" style="width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); text-align: center;">
@@ -768,157 +310,71 @@
           <button class="wallet-tab-btn tab-btn" data-tab="history">📜 History</button>
         </div>
 
+        <!-- Deposit View -->
         <div id="wallet-view-deposit">
           <div style="margin-bottom: 16px; background: rgba(245, 158, 11, 0.1); border-left: 3px solid var(--accent-gold); padding: 12px; border-radius: 4px; font-size: 13px; color: #cbd5e1; line-height: 1.5;">
             💡 <b>Manual Deposit System:</b> Please send your desired deposit amount to any of the verified accounts below. Once transferred, you can upload screenshots of your payment proof or send them via WhatsApp for instant wallet funding!
           </div>
-
-          <!-- EasyPaisa Options -->
+          <!-- EasyPaisa -->
           <div class="pay-detail-card">
-             <div class="pay-detail-header">
-                <img src="https://cdn.discordapp.com/attachments/1539728895660785797/1550452715748855848/images.png?ex=6aae631d&is=6aad119d&hm=eef5b8ba3d096c3504729eaa36ea74a687bb9439919be963cda55cf563672d74" alt="EasyPaisa" height="24" style="border-radius: 4px;">
-                <span>EasyPaisa Transfer</span>
-             </div>
+             <div class="pay-detail-header"><img src="https://cdn.discordapp.com/attachments/1539728895660785797/1550452715748855848/images.png?ex=6aae631d&is=6aad119d&hm=eef5b8ba3d096c3504729eaa36ea74a687bb9439919be963cda55cf563672d74" alt="EasyPaisa" height="24" style="border-radius: 4px;"><span>EasyPaisa Transfer</span></div>
              <div class="pay-detail-body">
-                <div class="copy-group">
-                   <div class="copy-info">
-                      <span class="copy-label">IBAN</span>
-                      <span class="copy-val mobile-break">PK59TMFB0000000041622751</span>
-                   </div>
-                   <button class="btn-copy" onclick="UI.copyText('PK59TMFB0000000041622751', 'EasyPaisa IBAN', this)">📋 Copy</button>
-                </div>
-                <div class="copy-group">
-                   <div class="copy-info">
-                      <span class="copy-label">Account Name</span>
-                      <span class="copy-val">Farhana Imam</span>
-                   </div>
-                </div>
+                <div class="copy-group"><div class="copy-info"><span class="copy-label">IBAN</span><span class="copy-val mobile-break">PK59TMFB0000000041622751</span></div><button class="btn-copy" onclick="UI.copyText('PK59TMFB0000000041622751', 'EasyPaisa IBAN', this)">📋 Copy</button></div>
+                <div class="copy-group"><div class="copy-info"><span class="copy-label">Account Name</span><span class="copy-val">Farhana Imam</span></div></div>
              </div>
           </div>
-
-          <!-- Cryptocurrency Options -->
+          <!-- Crypto -->
           <div class="pay-detail-card">
-             <div class="pay-detail-header">
-                <span style="font-size: 18px;">⚡</span>
-                <span>Cryptocurrency Options</span>
-             </div>
+             <div class="pay-detail-header"><span style="font-size: 18px;">⚡</span><span>Cryptocurrency Options</span></div>
              <div class="pay-detail-body">
-                <!-- LTC -->
-                <div class="copy-group">
-                   <div class="copy-info">
-                      <span class="copy-label"><img src="https://cryptologos.cc/logos/litecoin-ltc-logo.svg" height="14" style="vertical-align: middle;"> LiteCoin [ LTC ]</span>
-                      <span class="copy-val mobile-break">LYHXHj21nGBwKsR17Te8pHZDPy6B2KHnL9</span>
-                   </div>
-                   <button class="btn-copy" onclick="UI.copyText('LYHXHj21nGBwKsR17Te8pHZDPy6B2KHnL9', 'LTC Address', this)">📋 Copy</button>
-                </div>
-                <!-- SOL -->
-                <div class="copy-group">
-                   <div class="copy-info">
-                      <span class="copy-label"><img src="https://cryptologos.cc/logos/solana-sol-logo.svg" height="14" style="vertical-align: middle;"> Solana [ SOL ]</span>
-                      <span class="copy-val mobile-break">8sLntdHcssXzmAC9R8MHGTiDyqUM6GSRGHVNW7eTDcBR</span>
-                   </div>
-                   <button class="btn-copy" onclick="UI.copyText('8sLntdHcssXzmAC9R8MHGTiDyqUM6GSRGHVNW7eTDcBR', 'SOL Address', this)">📋 Copy</button>
-                </div>
-                <!-- BTC -->
-                <div class="copy-group">
-                   <div class="copy-info">
-                      <span class="copy-label"><img src="https://cryptologos.cc/logos/bitcoin-btc-logo.svg" height="14" style="vertical-align: middle;"> BitCoin [ BTC ]</span>
-                      <span class="copy-val mobile-break">125cBKfpHJ5BZ87r9E2jyTFrSnXapZnxdN</span>
-                   </div>
-                   <button class="btn-copy" onclick="UI.copyText('125cBKfpHJ5BZ87r9E2jyTFrSnXapZnxdN', 'BTC Address', this)">📋 Copy</button>
-                </div>
-                <!-- USDT -->
-                <div class="copy-group">
-                   <div class="copy-info">
-                      <span class="copy-label"><img src="https://cryptologos.cc/logos/tether-usdt-logo.svg" height="14" style="vertical-align: middle;"> USDT BSC BEP20</span>
-                      <span class="copy-val mobile-break">0x04efe2a1b6eadcab9410ace6a0aed21533bae5df</span>
-                   </div>
-                   <button class="btn-copy" onclick="UI.copyText('0x04efe2a1b6eadcab9410ace6a0aed21533bae5df', 'USDT Address', this)">📋 Copy</button>
-                </div>
+                <div class="copy-group"><div class="copy-info"><span class="copy-label"><img src="https://cryptologos.cc/logos/litecoin-ltc-logo.svg" height="14" style="vertical-align: middle;"> LiteCoin [ LTC ]</span><span class="copy-val mobile-break">LYHXHj21nGBwKsR17Te8pHZDPy6B2KHnL9</span></div><button class="btn-copy" onclick="UI.copyText('LYHXHj21nGBwKsR17Te8pHZDPy6B2KHnL9', 'LTC Address', this)">📋 Copy</button></div>
+                <div class="copy-group"><div class="copy-info"><span class="copy-label"><img src="https://cryptologos.cc/logos/solana-sol-logo.svg" height="14" style="vertical-align: middle;"> Solana [ SOL ]</span><span class="copy-val mobile-break">8sLntdHcssXzmAC9R8MHGTiDyqUM6GSRGHVNW7eTDcBR</span></div><button class="btn-copy" onclick="UI.copyText('8sLntdHcssXzmAC9R8MHGTiDyqUM6GSRGHVNW7eTDcBR', 'SOL Address', this)">📋 Copy</button></div>
+                <div class="copy-group"><div class="copy-info"><span class="copy-label"><img src="https://cryptologos.cc/logos/bitcoin-btc-logo.svg" height="14" style="vertical-align: middle;"> BitCoin [ BTC ]</span><span class="copy-val mobile-break">125cBKfpHJ5BZ87r9E2jyTFrSnXapZnxdN</span></div><button class="btn-copy" onclick="UI.copyText('125cBKfpHJ5BZ87r9E2jyTFrSnXapZnxdN', 'BTC Address', this)">📋 Copy</button></div>
+                <div class="copy-group"><div class="copy-info"><span class="copy-label"><img src="https://cryptologos.cc/logos/tether-usdt-logo.svg" height="14" style="vertical-align: middle;"> USDT BSC BEP20</span><span class="copy-val mobile-break">0x04efe2a1b6eadcab9410ace6a0aed21533bae5df</span></div><button class="btn-copy" onclick="UI.copyText('0x04efe2a1b6eadcab9410ace6a0aed21533bae5df', 'USDT Address', this)">📋 Copy</button></div>
              </div>
           </div>
-
-          <!-- Attach Payment Proofs Section -->
+          <!-- Upload Proof -->
           <div class="pay-detail-card" style="border-color: var(--accent-gold);">
-            <div class="pay-detail-header" style="background: rgba(245, 158, 11, 0.1);">
-              <span style="font-size: 18px;">📸</span>
-              <span style="color: var(--accent-gold);">Upload Payment Proofs</span>
-            </div>
+            <div class="pay-detail-header" style="background: rgba(245, 158, 11, 0.1);"><span style="font-size: 18px;">📸</span><span style="color: var(--accent-gold);">Upload Payment Proofs</span></div>
             <div class="pay-detail-body">
-              <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">
-                Take screenshots of your successful transaction and upload them here. You can attach multiple images.
-              </p>
+              <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">Take screenshots of your successful transaction and upload them here. You can attach multiple images.</p>
               <form id="proof-form" onsubmit="WalletManager.handleProofSubmit(event)">
-                <div class="form-group">
-                  <input type="file" id="proof-files" class="form-input file-input-modern" multiple accept="image/png, image/jpeg, image/jpg" required />
-                </div>
-                <button type="submit" class="btn-deposit-glow" style="width: 100%; margin-top: 12px; justify-content: center; font-size: 14px;">
-                  📤 Submit Proofs
-                </button>
+                <div class="form-group"><input type="file" id="proof-files" class="form-input file-input-modern" multiple accept="image/png, image/jpeg, image/jpg" required /></div>
+                <button type="submit" class="btn-deposit-glow" style="width: 100%; margin-top: 12px; justify-content: center; font-size: 14px;">📤 Submit Proofs</button>
               </form>
             </div>
           </div>
-
-          <!-- Whatsapp Contact Fallback -->
           <a href="https://wa.me/923430821414?text=Hello%2C%20I%20have%20sent%20the%20payment%20and%20want%20to%20deposit%20funds%20to%20my%20wallet!" target="_blank" class="whatsapp-contact-card">
-             <span style="font-size: 28px;">💬</span>
-             <div>
-                <b>Having trouble uploading?</b>
-                <span>Click here to send Payment Proof directly on Whatsapp! (+92 343 0821414)</span>
-             </div>
+             <span style="font-size: 28px;">💬</span><div><b>Having trouble uploading?</b><span>Click here to send Payment Proof directly on Whatsapp! (+92 343 0821414)</span></div>
           </a>
         </div>
 
+        <!-- Withdraw View -->
         <div id="wallet-view-withdraw" style="display: none;">
           <div style="background: rgba(16, 185, 129, 0.08); border-left: 3px solid var(--accent-green); padding: 12px; border-radius: 4px; font-size: 13px; color: #cbd5e1; margin-bottom: 14px;">
-            💡 <b>Instant Cashout:</b> Only funds earned from tournament placements and kills are withdrawable. Minimum withdrawal is <b>50 Coins</b>.
+            💡 <b>Instant Withdrawal:</b> Only coins earned from tournament placements and kills are withdrawable. Minimum withdrawal is <b>50 Coins</b>.
           </div>
-
           <form onsubmit="WalletManager.handleWithdrawSubmit(event)">
-            <div class="form-group">
-              <label class="form-label">Withdrawal Method</label>
-              <select class="form-select" id="withdraw-method-select">
-                <option value="JazzCash">JazzCash Mobile Account</option>
-                <option value="EasyPaisa">EasyPaisa Mobile Account</option>
-                <option value="NayaPay">NayaPay / SadaPay Account</option>
-                <option value="Bank Transfer">Bank Account (Raast / IBAN)</option>
-                <option value="Binance USDT">Binance Pay / USDT (TRC20)</option>
-                <option value="Any Crypto">Any Crypto Wallet Address</option>
-              </select>
+            <div class="form-group"><label class="form-label">Withdrawal Method</label><select class="form-select" id="withdraw-method-select"><option value="EasyPaisa">EasyPaisa Mobile Account</option><option value="Binance USDT">Binance Pay / USDT (TRC20)</option><option value="Any Crypto">Any Crypto Wallet Address</option></select></div>
+            <div class="form-group" style="margin-top: 12px;"><label class="form-label">Withdrawal Amount (Coins)</label><input type="number" class="form-input" id="withdraw-amount-input" placeholder="Min 50 Coins" min="50" required /></div>
+            <div class="form-group" style="margin-top: 12px;"><label class="form-label">Account / Crypto Address *</label><input type="text" class="form-input" id="withdraw-account-input" placeholder="e.g. 0300 1234567 or Wallet Address" required /></div>
+            <div class="form-group" style="margin-top: 12px;"><label class="form-label">Account Holder Name *</label><input type="text" class="form-input" id="withdraw-name-input" placeholder="Account Title / Name" required /></div>
+            
+            <!-- NEW ID PROOF SECTION -->
+            <div class="form-group" style="margin-top: 16px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 16px;">
+              <label class="form-label" style="color: var(--accent-gold);">Attach Screenshot Proof of Your Free Fire ID *</label>
+              <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">Please ensure it clearly shows your Account Level, Account Name, and Account UID for verification.</p>
+              <input type="file" id="withdraw-proof-file" class="form-input file-input-modern" accept="image/png, image/jpeg, image/jpg" required />
             </div>
 
-            <div class="form-group" style="margin-top: 12px;">
-              <label class="form-label">Withdrawal Amount (Coins)</label>
-              <input type="number" class="form-input" id="withdraw-amount-input" placeholder="Min 50 Coins" min="50" required />
-            </div>
-
-            <div class="form-group" style="margin-top: 12px;">
-              <label class="form-label">Account / Phone Number / Crypto Address *</label>
-              <input type="text" class="form-input" id="withdraw-account-input" placeholder="e.g. 0300 1234567 or Wallet Address" required />
-            </div>
-
-            <div class="form-group" style="margin-top: 12px;">
-              <label class="form-label">Account Holder Full Name *</label>
-              <input type="text" class="form-input" id="withdraw-name-input" placeholder="Account Title / Name" required />
-            </div>
-
-            <button type="submit" class="btn-primary" style="width: 100%; margin-top: 18px; justify-content: center; background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));">
-              Confirm Withdrawal Request
-            </button>
+            <button type="submit" class="btn-primary" style="width: 100%; margin-top: 24px; justify-content: center; background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));">Confirm Withdrawal Request</button>
           </form>
         </div>
 
+        <!-- History View -->
         <div id="wallet-view-history" style="display: none; max-height: 320px; overflow-y: auto;">
           <table class="lb-table" style="font-size: 13px;">
-            <thead>
-              <tr>
-                <th>TRX ID</th>
-                <th>Type</th>
-                <th>Amount</th>
-                <th>Status</th>
-                <th>Date</th>
-              </tr>
-            </thead>
+            <thead><tr><th>TRX ID</th><th>Type</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
             <tbody id="transactions-tbody"></tbody>
           </table>
         </div>
@@ -926,40 +382,27 @@
     </div>
   </div>
 
-  <div class="modal-overlay" id="details-modal">
-    <div class="modal-card">
-      <div class="modal-header">
-        <h3 style="font-size: 18px; color: #fff;">Match Rules & Prize Breakdown</h3>
-        <button class="modal-close" onclick="UI.closeModal('details-modal')">✕</button>
-      </div>
-      <div class="modal-body" id="details-modal-content"></div>
-    </div>
-  </div>
-
+  <!-- JOIN MATCH & SELECT SLOT MODAL -->
   <div class="modal-overlay" id="join-modal">
     <div class="modal-card">
       <div class="modal-header">
-        <h3 style="font-size: 18px; color: #fff;">Tournament Slot Registration</h3>
+        <h3 style="font-size: 18px; color: #fff;">⚔️ Match Details & Slot Booking</h3>
         <button class="modal-close" onclick="UI.closeModal('join-modal')">✕</button>
       </div>
-      <div class="modal-body" id="join-modal-content"></div>
+      <div class="modal-body" id="join-modal-content" style="max-height: 75vh; overflow-y: auto;">
+        <!-- Dynamic content rendered by TournamentsManager -->
+      </div>
     </div>
   </div>
 
   <div class="modal-overlay" id="profile-modal">
     <div class="modal-card">
-      <div class="modal-header">
-        <h3 style="font-size: 18px; color: #fff;">Player Esports Profile</h3>
-        <button class="modal-close" onclick="UI.closeModal('profile-modal')">✕</button>
-      </div>
+      <div class="modal-header"><h3 style="font-size: 18px; color: #fff;">Player Esports Profile</h3><button class="modal-close" onclick="UI.closeModal('profile-modal')">✕</button></div>
       <div class="modal-body" id="profile-modal-content"></div>
     </div>
   </div>
 
-  <!-- Toast Container -->
   <div class="toast-container" id="toast-container"></div>
-
-  <!-- Scripts -->
   <script src="js/firebase-config.js"></script>
   <script src="js/data.js"></script>
   <script src="js/store.js"></script>
